@@ -1,4 +1,37 @@
 /* CSS declarations go here */
+body {
+	margin-top: 50px;
+}
+span {
+	margin-bottom: 15px;
+}
+#craft{
+	width: 80%; 
+}
+#data-form {
+	margin: 0 auto;
+	width: 100%;
+}
+#data-form h1{
+	margin: 0px 0 15px;	
+}
+#data-form input {
+	width: 50%;
+	margin: 0 0 10px;
+}
+#header-image {
+	margin: 10px 0 0 45px;
+}
+#header-text {
+	float: left;
+	width: 45%;
+}
+.center-align {
+	text-align: center;
+}
+.container {
+	margin: 0 auto;
+}
 .glyphicon {
 	font-size: 50px;
 }
