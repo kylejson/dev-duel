@@ -95,7 +95,9 @@
 	  			<input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder" pattern="[a-zA-Z0-9]+" required> 
           <strong>Sign in with your Twitter acount!</strong>
           <p>{{loginButtons}}</p>
+          {{#if currentUser}}
 	  			<button class="btn btn-success btn-lg" role="button">Submit</button>
+          {{/if}}
 	  		</div>
 	      </div>
       </form>

@@ -40,6 +40,7 @@ Gravatar Function
 Meteor on the Client
 ********************/
   if (Meteor.isClient) {
+    
     //home page client functions/events
     Template.home.events({
       'click .play' : function () {
