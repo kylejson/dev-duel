@@ -90,9 +90,9 @@
             Thank you for submitting your info! Your player has been created! 
           </div> 
 	  			<strong for="gravatar-email">Gravatar Email: </strong> 
-	  			<input class="form-control" id="gravatar-email" type="email" placeholder="e.g. bob@mail.com"> <span class="pic"></span>
+	  			<input class="form-control" id="gravatar-email" type="email" placeholder="e.g. bob@mail.com" required> <span class="pic"></span>
           <strong for="github-handle">Github Username: </strong>
-	  			<input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder"> 
+	  			<input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder" pattern="[a-zA-Z0-9]+" required> 
           <strong>Sign in with your Twitter acount!</strong>
           <p>{{loginButtons}}</p>
 	  			<button class="btn btn-success btn-lg" role="button">Submit</button>
