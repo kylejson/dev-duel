@@ -85,13 +85,16 @@
       <form id="data-form" class="jumbotron">
 	      <div class="container">
 	  		<div class="form-group">
-	  			<h1>Hey there developer! Enter your info: </h1>
-	  			<label for="gravatar-email">Gravatar Email: </label>
-	  			<input class="form-control" id="gravatar-email" type="email" placeholder="e.g. bob@mail.comg">
-	  			<label for="twitter-handle">Twitter Handle: </label>
-	  			<input class="form-control" id="twitter-handle" type="text" placeholder="e.g. @fat">
-	  			<label for="github-handle">Github Username: </label>
-	  			<input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder">
+          <h1>Hey there developer! Enter your info: </h1>
+          <div class="alert alert-success" style="display: none;">
+            Thank you for submitting your info! Your player has been created! 
+          </div> 
+	  			<strong for="gravatar-email">Gravatar Email: </strong> 
+	  			<input class="form-control" id="gravatar-email" type="email" placeholder="e.g. bob@mail.com"> <span class="pic"></span>
+          <strong for="github-handle">Github Username: </strong>
+	  			<input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder"> 
+          <strong>Sign in with your Twitter acount!</strong>
+          <p>{{loginButtons}}</p>
 	  			<button class="btn btn-success btn-lg" role="button">Submit</button>
 	  		</div>
 	      </div>
@@ -114,6 +117,8 @@
       </div>
     </div>
 
+
+
     <div class="container">
       <footer>
       	<p>by: </p>
@@ -130,6 +135,7 @@
         </div>
       </div>
     </div>
+    {{>Players}}
 
     <div class="container">
       <footer>

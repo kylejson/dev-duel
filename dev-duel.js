@@ -3,7 +3,8 @@
  Global variables and Functions
 ********************/
   //rooms with hold game session and two player objects
-  rooms = new Meteor.Collection("games");
+  Rooms = new Meteor.Collection("rooms");
+  Players = new Meteor.Collection("players"); 
 
   //Api Stuff
   githudBaseURL = 'https://api.github.com/users/'; 
@@ -32,7 +33,7 @@ Gravatar Function
   }
   function makeUrl(hash){
     var baseUrl = 'http://gravatar.com/avatar/';
-    var picUrl = baseUrl + hash + '.jpg?s=50';
+    var picUrl = baseUrl + hash + '.jpg?s=100';
     return picUrl; 
   }
 /*********************
@@ -50,18 +51,17 @@ Meteor on the Client
       //submit
       'submit #data-form' : function (e) {
         e.preventDefault();
-
-        var email = $('#gravatar-email').val();
-        var twitter = $('#twitter-handle').val();
-        var github = $('#github-handle').val();
-        if(email != ""){
+        $('.alert-success').show();
+        // window.location.assign('/craft');
+        },
+      'keyup #gravatar-email' : function () {
+          var email = $('#gravatar-email').val();
           getGravatar(email);
           var gravatarUrl = makeUrl(hash);
-          $('.form-group').append('<img src="'+ gravatarUrl+ '"/>');
-        }
-        // window.location.assign('/craft');
-        // make calls here to apis returning data to be added to player object.
+          $('.pic').empty();
+          $('.pic').append('<img src="'+ gravatarUrl+ '"/>');
       }
+        // make calls here to apis returning data to be added to player object.
     });
     //craft page client functions/events
     Template.craft.events({
@@ -105,12 +105,5 @@ Meteor on the Server
     Meteor.startup(function () {
       // code to run on server at startup
     });
-    //Make twitter api call and publish in array
-    Twit = new TwitMaker({
-        consumer_key:         '...',
-        consumer_secret:      '...',
-        access_token:         '...',
-        access_token_secret:  '...'
-    });  
   }
 })();

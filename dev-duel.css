@@ -26,6 +26,9 @@ span {
 	float: left;
 	width: 45%;
 }
+.alert-success {
+	width: 60%;
+}
 .center-align {
 	text-align: center;
 }
@@ -34,4 +37,9 @@ span {
 }
 .glyphicon {
 	font-size: 50px;
+}
+.pic{
+	position: fixed;
+	left: 60%;
+	top: 30%;
 }

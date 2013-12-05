@@ -10,5 +10,5 @@ preserve-inputs
 jquery
 iron-router
 bootstrap-3
-twit
-github
+accounts-twitter
+accounts-ui
