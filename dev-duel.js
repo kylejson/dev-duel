@@ -6,23 +6,12 @@
   Rooms = new Meteor.Collection("rooms");
   Players = new Meteor.Collection("players"); 
 
-  //Api Stuff
-  githudBaseURL = 'https://api.github.com/users/'; 
+  //Gravatar Globals
   picUrl = '';
   hash = '';
+  //Github 
+  githudBaseURL = 'https://api.github.com/users/'; 
   githubStats = ['followers','repos','following','orgs'];
-  twitterStats = []; 
-  Players = {};
-  //player object
-  Player = {
-    id: '', 
-    moves: '',
-  };
-  //game object
-  Game = {
-
-  };
-  room_Id = " ";
 
 /*********************
 Gravatar Function
@@ -49,18 +38,28 @@ Meteor on the Client
     //form page client functions/events
     Template.formPage.events({
       //submit
-      'submit #data-form' : function (e) {
-        e.preventDefault();
-        $('.alert-success').show();
-        // window.location.assign('/craft');
-        },
       'keyup #gravatar-email' : function () {
           var email = $('#gravatar-email').val();
           getGravatar(email);
           var gravatarUrl = makeUrl(hash);
           $('.pic').empty();
           $('.pic').append('<img src="'+ gravatarUrl+ '"/>');
-      }
+      },
+      'submit #data-form' : function (e) {
+        e.preventDefault();
+        var playerId = Players.insert(
+          {
+            Name: $('#github-handle').val(),
+            Email: $('#gravatar-email').val(),
+            Picture: picUrl,
+            Moves: [],
+            TwitterId: Meteor.userId()
+          });
+          
+          $('.alert-success').show();
+          Meteor.setTimeout(window.location.assign('/craft'), 10000);
+        }
+        
         // make calls here to apis returning data to be added to player object.
     });
     //craft page client functions/events
