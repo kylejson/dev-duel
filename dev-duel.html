@@ -118,7 +118,9 @@
         </div>
       </div>
     </div>
- 
+    <div id="craftBoard">
+        <input type="submit" id="clickMe" class="btn btn-lrg btn-success" value="click me">
+    </div>
 
 
     <div class="container">
@@ -131,18 +133,100 @@
 
 <template name="game">
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">DevDuel</a>
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">DevDuel</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    {{>Players}}
-
-    <div class="container">
-      <footer>
-      	<p>by: </p>
-        <p>&copy; DevDuel 2013</p>
-      </footer>
-    </div>
+        <div class="jumbotron">
+            <div class="belowNavBar">
+                <div class="alert alert-info" id="alert">
+                    <a href="#" class="alert-link">An Alert Box Content</a>
+                </div>
+                <!--******left-side******* -->
+                <div id="left-side">
+                    <h2>Player 1</h2>
+                    <div id="row-l">
+                        <a href="#" class="thumbnail" id="thumbnail-l">
+                          <img src="" alt="picture 1">
+                        </a>
+                        <p>Player 1 life bar</p>
+                    </div>
+                    <div class="progress" id="progress-l">
+                        <div class="progress-bar progress-bar-danger" style="width: 35%">
+                            <span class="sr-only">35% Complete (danger)</span>
+                        </div>
+                        <div class="progress-bar progress-bar-warning" style="width: 20%">
+                            <span class="sr-only">20% Complete (warning)</span>
+                        </div>
+                        <div class="progress-bar progress-bar-success" style="width: 10%">
+                            <span class="sr-only">10% Complete (success)</span>
+                        </div>
+                    </div>
+                    <div class="list-group" id="list-group-l">
+                        <a href="#" class="list-group-item active">
+                        <h4 class="list-group-item-heading">Item heading 1</h4>
+                        <p class="list-group-item-text">item1 text</p>
+                       
+                      </a>
+                        <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading">Item heading 2</h4>
+                        <p class="list-group-item-text">item2 text</p>
+                       
+                      </a>
+                        <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading">Item heading 3</h4>
+                        <p class="list-group-item-text">item3 text</p>
+                       
+                      </a>
+                    </div>
+                </div>
+                <!--*********right side**********-->
+                <div id="right-side">
+                    <h2>Player 2</h2>
+                    <div id="row-r">
+                        <a href="#" class="thumbnail" id="thumbnail-r">
+                          <img src="" alt="picture 2">
+                        </a>
+                        <p>Player 2 life bar</p>
+                    </div>
+                    <div class="progress" id="progress-r">
+                        <div class="progress-bar progress-bar-danger" style="width: 35%">
+                            <span class="sr-only">35% Complete (danger)</span>
+                        </div>
+                        <div class="progress-bar progress-bar-warning" style="width: 20%">
+                            <span class="sr-only">20% Complete (warning)</span>
+                        </div>
+                        <div class="progress-bar progress-bar-success" style="width: 10%">
+                            <span class="sr-only">10% Complete (success)</span>
+                        </div>
+                    </div>
+                    <div class="list-group" id="list-group-r">
+                        <a href="#" class="list-group-item active">
+                                <h4 class="list-group-item-heading">Item heading 1</h4>
+                                <p class="list-group-item-text">item1 text</p>
+                               
+                              </a>
+                        <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading">Item heading 2</h4>
+                                <p class="list-group-item-text">item2 text</p>
+                               
+                              </a>
+                        <a href="#" class="list-group-item">
+                                <h4 class="list-group-item-heading">Item heading 3</h4>
+                                <p class="list-group-item-text">item3 text</p>
+                               
+                              </a>
+                    </div>
+                </div>
+            </div>
+        <div class="container" id="container">
+            <footer>
+                <p>by:</p>
+                <p>&copy; DevDuel 2013</p>
+            </footer>
+        </div>
+        </div>
+       
 </template>

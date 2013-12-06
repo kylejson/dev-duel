@@ -54,17 +54,28 @@ Meteor on the Client
             Email: $('#gravatar-email').val(),
             Picture: picUrl,
             Moves: [],
-            TwitterId: Meteor.userId()
+            TwitterId: Meteor.userId(),
+            Room: null,
+            Turn: false
           });
           
           $('.alert-success').show();
-          Meteor.setTimeout(window.location.assign('/craft'), 10000);
+          Meteor.setTimeout(function(){window.location.assign('/craft')}, 5000);
         }
-        
-        // make calls here to apis returning data to be added to player object.
     });
-    //craft page client functions/events
+        // make calls here to apis returning data to be added to player object.
+    Template.craft.created = function() {
+      $('#craftBoard').append('<p>Hello craft page.</p>');
+      return "Hello craft page"; 
+    };
+   
     Template.craft.events({
+      'click #clickMe' : function () {
+        HTTP.get('https://api.twitter.com/1.1/users/show.json?screen_name=r' + Meteor.user().screenName, function(response) { 
+          console.log(response);
+        });
+      }
+
       //add to recipe
 
       //remove from recipe 
