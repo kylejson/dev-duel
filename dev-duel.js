@@ -15,7 +15,6 @@
   //Gravatar Globals
   picUrl = '';
   twitterHandle = '';
-  githubHandle = '';
   hash = '';
   //Github 
   githudBaseURL = 'https://api.github.com/users/'; 
@@ -60,26 +59,25 @@ Meteor on the Client
         getGravatar(email);
         var gravatarUrl = makeUrl(hash);
         
-        var playerId = Users.insert(
-          {
+        var playerId = Meteor.users.update (
+          { _id: Meteor.userId()}, { $set : {profile: {
             Player :{ 
-              Name: $('#github-handle').val(),
-              Email: $('#gravatar-email').val(),
-              Picture: gravatarUrl,
-              Moves: [],
-              Room: null,
-              Turn: false
-            }
-          });
-          
+               Name: $('#github-handle').val(),
+               Email: $('#gravatar-email').val(),
+               Picture: gravatarUrl,
+               Moves: [],
+               Room: null,
+               Turn: false
+             } } } 
+            });
           $('.alert-success').show();
           Meteor.setTimeout(function(){Router.go('/craft')}, 5000);
         }
     });
         // make calls here to apis returning data to be added to player object.
     Template.craft.created = function() {
-      //Call for Github Data
-      HTTP.call('GET','https://api.github.com/users/' + Meteor.user().Player.Name, function (error,result) {
+      //Call for Github Data Meteor.user needs a name here
+      HTTP.call('GET','https://api.github.com/users/' + Meteor.user().profile.Player.Name, function (error,result) {
           var github = result.data;
           if(!error){
             $('#gh-followers').append(github.followers);
@@ -109,7 +107,7 @@ Meteor on the Client
         var room = Rooms.findOne({PlayerCount: {$lt :2} });
         if(room) {
           room.update({ 
-            Players: Meteor.user().Player
+            Players: Meteor.user()
           });
         
         }else{  
@@ -160,6 +158,15 @@ Meteor on the Server
     Meteor.startup(function () {
       // code to run on server at startup
     });
+
+    Meteor.users.allow({
+      'update': function (userId,doc) {
+       /* user and doc checks ,
+       return true to allow insert */
+       return true; 
+      }
+    });
+
 
     // Server side methods
     Meteor.methods({
