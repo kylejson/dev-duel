@@ -43,3 +43,80 @@ span {
 	left: 60%;
 	top: 30%;
 }
+
+/*Nicks css*/
+.belowNavBar {
+                width:1024px;
+                margin: 20px auto 0;
+            }
+            /********left-side styling**********/
+            #left-side {
+                width: 45%;
+                float:left;
+                margin: 30px auto 0;
+            }
+            #alert {
+                width: 1024px;
+                margin: 0 auto 0;
+            }
+            #progress-l {
+            }
+            #row-l {
+            }
+           
+            #row-l img{
+               
+               
+            }
+           
+           
+            #thumbnail-l {
+                height: 200px;
+                width:500px;
+                margin: 30px auto 30px;
+            }
+            #row-l p {
+                margin-left: 50px;
+                font-size: 1.2em;
+            }
+            #list-group-l {
+            }
+            /*********right-side styling************/
+            #right-side {
+                width: 45%;
+                float:right;
+                margin: 30px auto 0;
+            }
+            #progress-r {
+            }
+            #row-r {
+            }
+           
+           
+            #row-r img{
+               
+               
+            }
+           
+            #thumbnail-r {
+                height: 200px;
+                width:500px;
+                margin: 30px auto 30px;
+            }
+            #row-r p {
+                margin-left: 50px;
+                font-size: 1.2em;
+            }
+            #list-group-r {
+            }
+            #container {
+                width:1024px;
+                clear:both;
+                margin-top:30px;
+            }
+            #container footer p {
+                margin-left:40%;
+            }
+            footer {
+            	clear: both;
+            }
