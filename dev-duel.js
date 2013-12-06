@@ -167,7 +167,7 @@ Meteor on the Server
             var result = HTTP.call("POST", "https://api.twitter.com/oauth/request_token"  
                 headers: {
                   'Content-Type': 'application/json'
-                }
+                } 
 
             );
             return result; 
