@@ -121,7 +121,7 @@ Meteor on the Server
 
       Meteor.methods({
           checkTwitter: function () {
-            this.unblock();
+            this.unblock(); 
 
             try {
               var result = HTTP.call("GET", "https://api.github.com/users/designblooz",  
