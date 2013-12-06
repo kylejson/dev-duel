@@ -29,7 +29,8 @@ Gravatar Function
 Meteor on the Client
 ********************/
   if (Meteor.isClient) {
-    
+
+
     //home page client functions/events
     Template.home.events({
       'click .play' : function () {
@@ -71,10 +72,12 @@ Meteor on the Client
    
     Template.craft.events({
       'click #clickMe' : function () {
-        var twitterHandle = Meteor.user().services.twitter.screenName
-        HTTP.get('https://api.twitter.com/1.1/users/show.json?screen_name=' + twitterHandle, function(response) { 
-          console.log(response);
-        });
+        var twitterHandle = Meteor.user().services.twitter.screenName;
+
+        Meteor.call("checkTwitter", function(error, result) {
+            console.log(result);
+        })
+        
       }
 
       //add to recipe
@@ -115,7 +118,29 @@ Meteor on the Server
 ********************/
   if (Meteor.isServer) {
     Meteor.startup(function () {
-      // code to run on server at startup
+
+      Meteor.methods({
+          checkTwitter: function () {
+            this.unblock();
+
+            try {
+              var result = HTTP.call("GET", "https://api.github.com/users/designblooz",  
+                {
+                  headers: {
+                    'Content-Type': 'application/json', 
+                    'User-Agent': 'Awesome-Octocat-App'
+                  }
+                }
+              );
+              return result; 
+            } catch (e) {
+              // Got a network error, time-out or HTTP error in the 400 or 500 range.
+              return false;
+            }
+          }
+      });  
     });
+
+    
   }
 })();
