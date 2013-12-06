@@ -66,11 +66,14 @@ Meteor on the Client
     Template.craft.created = function() {
       $('#craftBoard').append('<p>Hello craft page.</p>');
       return "Hello craft page"; 
-      // HTTP.get('https://api.twitter.com/1.1/users/show.json?screen_name=r' + Meteor.user().screenName, function() { });
     };
    
     Template.craft.events({
-    //craft page client functions/events
+      'click #clickMe' : function () {
+        HTTP.get('https://api.twitter.com/1.1/users/show.json?screen_name=r' + Meteor.user().screenName, function(response) { 
+          console.log(response);
+        });
+      }
 
       //add to recipe
 
