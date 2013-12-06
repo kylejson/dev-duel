@@ -73,6 +73,9 @@ span {
 }
 #list-group-l {
 }
+ul {
+	list-style:none;
+}
 /*********right-side styling************/
 #right-side {
     width: 45%;

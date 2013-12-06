@@ -72,14 +72,24 @@ Meteor on the Client
     Template.craft.created = function() {
       //Call for Github Data
       HTTP.call('GET','https://api.github.com/users/kylejson', function (error,result) {
+          var github = result.data;
           if(!error){
-            console.log("GH Followers: " + result.data.followers);
-            console.log("GH Following: " + result.data.following);
-            console.log("GH Gists: " + result.data.public_gists);
-            console.log("GH Repos: " + result.data.public_repos);
+            $('#gh-followers').append(github.followers);
+            $('#gh-following').append(github.following);
+            $('#gh-repos').append(github.public_repos);
+            $('#gh-gists').append(github.public_gists);
             return true;  
           } 
       });
+
+      Meteor.call("twitterData", function(error, result) {
+          var twitter = result.data;
+          $('#tw-followers').append(twitter.followers_count);
+          $('#tw-following').append(twitter.friends_count);
+          $('#tw-tweets').append(twitter.statuses_count);
+          $('#tw-retweets').append(twitter.status.retweet_count);
+          $('#tw-favorites').append(twitter.favourites_count);
+      });  
     };
    
     Template.craft.events({
@@ -96,28 +106,11 @@ Meteor on the Client
           Rooms.insert({
             PlayerCount: 0,
             Players: [],
-            Room : '',
-
+            Room : ''
           });
-        } 
-        }); 
-
-        // get twitter call
-        Meteor.call("twitterData", function(error, result) {
-            console.log(result);
-        })        
-        // Meteor.call('getGithubInfo');
-        // twitterHandle = Meteor.user().services.twitter.screenName
-        // getTwitterInfo();
+        }
       }
-
-      //add to recipe
-
-      //remove from recipe 
-
-      //click ready or submit form 
-
-    });
+    }); 
 /*********************
 Router configurations
 ********************/
@@ -177,25 +170,6 @@ Meteor on the Server
           return false;
         }
       }
-              /*{
-        twitterData: function () {
-          this.unblock(); 
-          var twitterHandle = Meteor.user().services.twitter.screenName
-
-          try {
-            var result = HTTP.call("POST", "https://api.twitter.com/oauth/request_token"  
-                headers: {
-                  'Content-Type': 'application/json'
-                } 
-
-            );
-            return result; 
-          } catch (e) {
-            // Got a network error, time-out or HTTP error in the 400 or 500 range.
-            return false;
-          }
-        }
-              },*/
     });  
   }
 })();

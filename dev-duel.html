@@ -119,11 +119,6 @@
   </div>
 </div>
 <div class="maincontainer jumbotron">
-
-  <div id="craftBoard">
-    <input type="submit" id="clickMe" class="btn btn-lrg btn-success" value="click me">
-  </div>
-  
   <div class="header">
     <h1 class="text-center">Craft your moves!</h1>
   </div><!--end header-->
@@ -133,17 +128,20 @@
         <div class="twitterstuff">
           <h2>Twitter Data:</h2>
           <ul>
-            <li><strong>Followers:</strong> # of follwers</li>
-            <li><strong>Tweets: </strong># of tweets</li>
-            <li><strong>Following: </strong># of people following</li>
+            <li id="tw-followers"><strong>Followers: </strong></li>
+            <li id="tw-following"><strong>Following: </strong></li>
+            <li id="tw-tweets"><strong>Tweets: </strong></li>
+            <li id="tw-favorites"><strong>Favorites: </strong></li>
+            <li id="tw-retweets"><strong>Last Tweet Retweets: </strong></li>
           </ul>
         </div><!--end twitter stuff-->
         <div class="gitstuff">
           <h2>Github Data:</h2>
           <ul>
-            <li><strong>Repos: </strong> # of repos</li>
-            <li><strong>Followers: </strong> # of followers</li>
-            <li><strong>Following: </strong> # of your followers</li>
+            <li id="gh-followers"><strong>Followers: </strong></li>
+            <li id="gh-following"><strong>Following: </strong></li>
+            <li id="gh-repos"><strong>Repos: </strong></li>
+            <li id="gh-gists"><strong>Gists: </strong></li>
           </ul>
         </div><!--end git stuff-->
       </div><!--end info-->
@@ -155,7 +153,24 @@
           <div class="row">
             <div class="col-md-3">
               <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Push Production</h4>
+                  <p>You just pushed your code into production. Adds Health</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <div class="caption">
+                  <h4>Git Fork</h4>
+                  <p>Fork your opponents repo to make it better. Does Damage</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
                 <div class="caption">
                   <h4>Move Title</h4>
                   <p>this is where the description goes</p>
@@ -165,27 +180,6 @@
             </div><!--end col 3-->
             <div class="col-md-3">
               <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
                 <div class="caption">
                   <h4>Move Title</h4>
                   <p>this is where the description goes</p>
@@ -197,7 +191,6 @@
           <div class="row">
             <div class="col-md-3">
               <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
                 <div class="caption">
                   <h4>Move Title</h4>
                   <p>this is where the description goes</p>
@@ -207,7 +200,6 @@
             </div><!--end col 3-->
             <div class="col-md-3">
               <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
                 <div class="caption">
                   <h4>Move Title</h4>
                   <p>this is where the description goes</p>
@@ -217,7 +209,6 @@
             </div><!--end col 3-->
             <div class="col-md-3">
               <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
                 <div class="caption">
                   <h4>Move Title</h4>
                   <p>this is where the description goes</p>
@@ -227,7 +218,6 @@
             </div><!--end col 3-->
             <div class="col-md-3">
               <div class="thumbnail">
-                <img data-src="holder.js/300x200" alt="...">
                 <div class="caption">
                   <h4>Move Title</h4>
                   <p>this is where the description goes</p>
