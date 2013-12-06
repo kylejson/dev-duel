@@ -5,6 +5,13 @@
   //rooms with hold game session and two player objects
   Rooms = new Meteor.Collection("rooms");
   Players = new Meteor.Collection("players"); 
+  Move = {
+    init: function(title, damage, used) {
+      this.title = title;
+      this.damage = damage;
+      this.used = used;
+    }
+  };
   
   //Gravatar Globals
   picUrl = '';
@@ -80,9 +87,18 @@ Meteor on the Client
             return true;  
           } 
       });
+
+
+      // get twitter call
+      Meteor.call("twitterData", function(error, result) {
+          console.log("following: " + result.data.friends_count);
+          console.log("tweets: " + result.data.statuses_count);
+          console.log("followers: " + result.data.followers_count);
+      });         
     };
    
     Template.craft.events({
+
       'click .ready' : function () {
         console.log("User: " + Meteor.userId());
 
@@ -100,12 +116,7 @@ Meteor on the Client
 
           });
         } 
-        }); 
 
-        // get twitter call
-        Meteor.call("twitterData", function(error, result) {
-            console.log(result);
-        })        
         // Meteor.call('getGithubInfo');
         // twitterHandle = Meteor.user().services.twitter.screenName
         // getTwitterInfo();
@@ -155,7 +166,7 @@ Meteor on the Server
 
     // Server side methods
     Meteor.methods({
-      twitterData: function() {
+ /*      twitterData: function() {
         this.unblock(); 
         var twitterHandle = Meteor.user().services.twitter.screenName
 
@@ -177,25 +188,42 @@ Meteor on the Server
           return false;
         }
       }
-              /*{
-        twitterData: function () {
-          this.unblock(); 
-          var twitterHandle = Meteor.user().services.twitter.screenName
-
-          try {
-            var result = HTTP.call("POST", "https://api.twitter.com/oauth/request_token"  
+             {*/
+      twitterData: function () {
+        this.unblock(); 
+        var twitterHandle = Meteor.user().services.twitter.screenName
+        var config = Accounts.loginServiceConfiguration.findOne({service: 'twitter'});
+        var base64AuthToken = new Buffer(config.consumerKey + ":" + config.secret).toString('base64');
+        var token;
+        try {
+          token = HTTP.call("POST", "https://api.twitter.com/oauth2/token",
+            {
+                params: {
+                  'grant_type': 'client_credentials'
+                },            
                 headers: {
-                  'Content-Type': 'application/json'
-                } 
-
-            );
+                  'Authorization': 'Basic ' + base64AuthToken,
+                  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                }             
+            }  
+          );
+          try {
+            var result = HTTP.call('GET',
+              "https://api.twitter.com/1.1/users/show.json", {
+              params : {screen_name: twitterHandle},
+              headers : {
+                'Authorization': 'Bearer ' + token.data.access_token
+              }
+            });
             return result; 
           } catch (e) {
-            // Got a network error, time-out or HTTP error in the 400 or 500 range.
             return false;
           }
+        } catch (e) {
+          // Got a network error, time-out or HTTP error in the 400 or 500 range.
+          return false;
         }
-              },*/
+      }
     });  
   }
 })();
