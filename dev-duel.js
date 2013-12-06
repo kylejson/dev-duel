@@ -4,11 +4,11 @@
 ********************/
   //rooms with hold game session and two player objects
   Rooms = new Meteor.Collection("rooms");
-  Players = new Meteor.Collection("players"); 
   
   //Gravatar Globals
   picUrl = '';
   twitterHandle = '';
+  githubHandle = '';
   hash = '';
   //Github 
   githudBaseURL = 'https://api.github.com/users/'; 
@@ -53,15 +53,16 @@ Meteor on the Client
         getGravatar(email);
         var gravatarUrl = makeUrl(hash);
         
-        var playerId = Players.insert(
+        var playerId = Users.insert(
           {
-            Name: $('#github-handle').val(),
-            Email: $('#gravatar-email').val(),
-            Picture: gravatarUrl,
-            Moves: [],
-            TwitterId: Meteor.userId(),
-            Room: null,
-            Turn: false
+            Player :{ 
+              Name: $('#github-handle').val(),
+              Email: $('#gravatar-email').val(),
+              Picture: gravatarUrl,
+              Moves: [],
+              Room: null,
+              Turn: false
+            }
           });
           
           $('.alert-success').show();
@@ -71,7 +72,7 @@ Meteor on the Client
         // make calls here to apis returning data to be added to player object.
     Template.craft.created = function() {
       //Call for Github Data
-      HTTP.call('GET','https://api.github.com/users/kylejson', function (error,result) {
+      HTTP.call('GET','https://api.github.com/users/' + Meteor.user().Player.Name, function (error,result) {
           var github = result.data;
           if(!error){
             $('#gh-followers').append(github.followers);
@@ -99,7 +100,7 @@ Meteor on the Client
         var room = Rooms.findOne({PlayerCount: {$lt :2} });
         if(room) {
           room.update({ 
-            Players: Meteor.user()
+            Players: Meteor.user().Player
           });
         
         }else{  
