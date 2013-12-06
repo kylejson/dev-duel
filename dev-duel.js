@@ -4,6 +4,13 @@
 ********************/
   //rooms with hold game session and two player objects
   Rooms = new Meteor.Collection("rooms");
+  Move = {
+    init: function(title, damage, used) {
+      this.title = title;
+      this.damage = damage;
+      this.used = used;
+    }
+  };
   
   //Gravatar Globals
   picUrl = '';
@@ -91,9 +98,11 @@ Meteor on the Client
           $('#tw-retweets').append(twitter.status.retweet_count);
           $('#tw-favorites').append(twitter.favourites_count);
       });  
+      
     };
    
     Template.craft.events({
+
       'click .ready' : function () {
         console.log("User: " + Meteor.userId());
 
@@ -109,7 +118,12 @@ Meteor on the Client
             Players: [],
             Room : ''
           });
-        }
+
+        } 
+
+        // Meteor.call('getGithubInfo');
+        // twitterHandle = Meteor.user().services.twitter.screenName
+        // getTwitterInfo();
       }
     }); 
 /*********************
@@ -149,7 +163,7 @@ Meteor on the Server
 
     // Server side methods
     Meteor.methods({
-      twitterData: function() {
+ /*      twitterData: function() {
         this.unblock(); 
         var twitterHandle = Meteor.user().services.twitter.screenName
 
@@ -166,6 +180,43 @@ Meteor on the Server
 
           );
           return result; 
+        } catch (e) {
+          // Got a network error, time-out or HTTP error in the 400 or 500 range.
+          return false;
+        }
+      }
+
+             {*/
+      twitterData: function () {
+        this.unblock(); 
+        var twitterHandle = Meteor.user().services.twitter.screenName
+        var config = Accounts.loginServiceConfiguration.findOne({service: 'twitter'});
+        var base64AuthToken = new Buffer(config.consumerKey + ":" + config.secret).toString('base64');
+        var token;
+        try {
+          token = HTTP.call("POST", "https://api.twitter.com/oauth2/token",
+            {
+                params: {
+                  'grant_type': 'client_credentials'
+                },            
+                headers: {
+                  'Authorization': 'Basic ' + base64AuthToken,
+                  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                }             
+            }  
+          );
+          try {
+            var result = HTTP.call('GET',
+              "https://api.twitter.com/1.1/users/show.json", {
+              params : {screen_name: twitterHandle},
+              headers : {
+                'Authorization': 'Bearer ' + token.data.access_token
+              }
+            });
+            return result; 
+          } catch (e) {
+            return false;
+          }
         } catch (e) {
           // Got a network error, time-out or HTTP error in the 400 or 500 range.
           return false;
