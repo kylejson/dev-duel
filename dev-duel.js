@@ -71,7 +71,8 @@ Meteor on the Client
    
     Template.craft.events({
       'click #clickMe' : function () {
-        HTTP.get('https://api.twitter.com/1.1/users/show.json?screen_name=r' + Meteor.user().screenName, function(response) { 
+        var twitterHandle = Meteor.user().services.twitter.screenName
+        HTTP.get('https://api.twitter.com/1.1/users/show.json?screen_name=' + twitterHandle, function(response) { 
           console.log(response);
         });
       }
