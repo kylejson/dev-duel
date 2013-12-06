@@ -5,7 +5,7 @@
   //rooms with hold game session and two player objects
   Rooms = new Meteor.Collection("rooms");
   Players = new Meteor.Collection("players"); 
-
+  
   //Gravatar Globals
   picUrl = '';
   twitterHandle = '';
@@ -34,7 +34,7 @@ Meteor on the Client
     //home page client functions/events
     Template.home.events({
       'click .play' : function () {
-        window.location.assign('/form');
+        Router.go('/form');
       }
     });
     //form page client functions/events
@@ -65,22 +65,41 @@ Meteor on the Client
           });
           
           $('.alert-success').show();
-          Meteor.setTimeout(function(){window.location.assign('/craft')}, 5000);
+          Meteor.setTimeout(function(){Router.go('/craft')}, 5000);
         }
     });
         // make calls here to apis returning data to be added to player object.
     Template.craft.created = function() {
-      $('#craftBoard').append('<p>Hello craft page.</p>');
-      return "Hello craft page"; 
+      //Call for Github Data
+      HTTP.call('GET','https://api.github.com/users/kylejson', function (error,result) {
+          if(!error){
+            console.log("GH Followers: " + result.data.followers);
+            console.log("GH Following: " + result.data.following);
+            console.log("GH Gists: " + result.data.public_gists);
+            console.log("GH Repos: " + result.data.public_repos);
+            return true;  
+          } 
+      });
     };
    
     Template.craft.events({
-      'click #clickMe' : function () {
-        HTTP.call('GET','https://api.github.com/users/kylejson', function (error,result) {
-          if(!error){
-            console.log(result);
-            return true;  
-          } 
+      'click .ready' : function () {
+        console.log("User: " + Meteor.userId());
+
+        var room = Rooms.findOne({PlayerCount: {$lt :2} });
+        if(room) {
+          room.update({ 
+            Players: Meteor.user()
+          });
+        
+        }else{  
+          Rooms.insert({
+            PlayerCount: 0,
+            Players: [],
+            Room : '',
+
+          });
+        } 
         }); 
 
         // get twitter call
