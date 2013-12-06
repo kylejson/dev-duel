@@ -1,232 +1,370 @@
 <head>
-  <title>dev-duel</title>
+<title>dev-duel</title>
 </head>
 
 <body>
-  {{> hello}}
+{{> hello}}
 </body>
 
 <template name="hello">
-	{{yield}}
+{{yield}}
 </template>
 
 <template name="home">
 
-	 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/">DevDuel</a>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">DevDuel</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <form class="navbar-form navbar-right">
+        <div class="form-group">
+          <input type="text" value="Players Online: {{players}} " class="form-control" id="onlinePlayers" disabled>
         </div>
-        <div class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" value="Players Online: {{players}} " class="form-control" id="onlinePlayers" disabled>
-            </div>
-          </form>
-        </div><!--/.navbar-collapse -->
+      </form>
+    </div><!--/.navbar-collapse -->
+  </div>
+</div>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+  <div class="container">
+    <div id="header-text">
+      <h1>Lets Duel!</h1>
+      <p>Welcome to DevDuel! An awesome gravatar, twitter and github mashup that uses meteor and canvas to create a turn based game for developers to duel eachother with their data!</p>
+      <p><a href="/form" class=" play btn btn-success btn-lg" role="button">Play !</a></p>
+    </div>
+    <img id="header-image" src="http://placehold.it/580x260">
+  </div>
+</div>
+
+<div class="container">
+  <!-- Example row of columns -->
+  <div class="row">
+    <div class="col-md-4">
+      <div class="center-align">
+        <h2>Get Data</h2>
+        <span class="glyphicon glyphicon-user"></span>
+        <p>To use your data you will submit your gravatar email, github, and twitter handles. DevDuel will then organize your data values.</p>
       </div>
     </div>
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-      	<div id="header-text">
-	        <h1>Lets Duel!</h1>
-	        <p>Welcome to DevDuel! An awesome gravatar, twitter and github mashup that uses meteor and canvas to create a turn based game for developers to duel eachother with their data!</p>
-	        <p><a href="/form" class=" play btn btn-success btn-lg" role="button">Play !</a></p>
-	    </div>
-	    <img id="header-image" src="http://placehold.it/580x260">
+    <div class="col-md-4">
+      <div class="center-align">
+        <h2>Craft</h2>
+        <span class="glyphicon glyphicon-wrench"></span>
+        <p>Craft these data values together to create four moves to take into battle with you against and unknown developer foe.</p>
       </div>
     </div>
-
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <div class="center-align">
-	          <h2>Get Data</h2>
-	          <span class="glyphicon glyphicon-user"></span>
-	          <p>To use your data you will submit your gravatar email, github, and twitter handles. DevDuel will then organize your data values.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="center-align">
-	          <h2>Craft</h2>
-	          <span class="glyphicon glyphicon-wrench"></span>
-	          <p>Craft these data values together to create four moves to take into battle with you against and unknown developer foe.</p>
-          </div>
-       </div>
-        <div class="col-md-4">
-          <div class="center-align">
-	          <h2>Duel</h2>
-	          <span class="glyphicon glyphicon-tower"></span>
-	          <p>Duel it out to the end with the moves you created with your tweets, forks, and repos in an epic turn based rpg style battle.</p>
-	      </div>
-        </div>
+    <div class="col-md-4">
+      <div class="center-align">
+        <h2>Duel</h2>
+        <span class="glyphicon glyphicon-tower"></span>
+        <p>Duel it out to the end with the moves you created with your tweets, forks, and repos in an epic turn based rpg style battle.</p>
       </div>
+    </div>
+  </div>
 
-      <hr>
+  <hr>
 
-      <footer>
-      	<p>by: </p>
-        <p>&copy; DevDuel 2013</p>
-      </footer>
-    </div> <!-- /container -->
+  <footer>
+    <p>by: </p>
+    <p>&copy; DevDuel 2013</p>
+  </footer>
+</div> <!-- /container -->
 </template>
 
 <template name="formPage">
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">DevDuel</a>
-        </div>
-      </div>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">DevDuel</a>
     </div>
-      <form id="data-form" class="jumbotron">
-	      <div class="container">
-	  		<div class="form-group">
-          <h1>Hey there developer! Enter your info: </h1>
-          <div class="alert alert-success" style="display: none;">
-            Thank you for submitting your info! Your player has been created! 
-          </div> 
-	  			<strong for="gravatar-email">Gravatar Email: </strong> 
-	  			<input class="form-control" id="gravatar-email" type="email" placeholder="e.g. bob@mail.com" required> <span class="pic"></span>
-          <strong for="github-handle">Github Username: </strong>
-	  			<input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder" pattern="[a-zA-Z0-9]+" required> 
-          <strong>Sign in with your Twitter acount!</strong>
-          <p>{{loginButtons}}</p>
-          {{#if currentUser}}
-	  			<button class="btn btn-success btn-lg" role="button">Submit</button>
-          {{/if}}
-	  		</div>
-	      </div>
-      </form>
+  </div>
+</div>
+<form id="data-form" class="jumbotron">
+  <div class="container">
+    <div class="form-group">
+      <h1>Hey there developer! Enter your info: </h1>
+      <div class="alert alert-success" style="display: none;">
+        Thank you for submitting your info! Your player has been created! 
+      </div> 
+      <strong for="gravatar-email">Gravatar Email: </strong> 
+      <input class="form-control" id="gravatar-email" type="email" placeholder="e.g. bob@mail.com" required> <span class="pic"></span>
+      <strong for="github-handle">Github Username: </strong>
+      <input class="form-control" id="github-handle" type="text" placeholder="e.g. supercoder" pattern="[a-zA-Z0-9]+" required> 
+      <strong>Sign in with your Twitter acount!</strong>
+      <p>{{loginButtons}}</p>
+      {{#if currentUser}}
+      <button class="btn btn-success btn-lg" role="button">Submit</button>
+      {{/if}}
+    </div>
+  </div>
+</form>
 
-	 <div class="container">
-      <footer>
-      	<p>by: </p>
-        <p>&copy; DevDuel 2013</p>
-      </footer>
-    </div>
+<div class="container">
+  <footer>
+    <p>by: </p>
+    <p>&copy; DevDuel 2013</p>
+  </footer>
+</div>
 </template>
 
 <template name="craft">
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">DevDuel</a>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">DevDuel</a>
+    </div>
+  </div>
+</div>
+<div id="craftBoard">
+  <input type="submit" id="clickMe" class="btn btn-lrg btn-success" value="click me">
+</div>
+<div class="maincontainer">
+  <div class="header">
+    <h1 class="text-center">Craft your moves!</h1>
+  </div><!--end header-->
+  <div class="row">
+    <div class="col-sm-3 left">
+      <div class="info">
+        <div class="twitterstuff">
+          <h2>Twitter Data:</h2>
+          <ul>
+            <li><strong>Followers:</strong> # of follwers</li>
+            <li><strong>Tweets: </strong># of tweets</li>
+            <li><strong>Following: </strong># of people following</li>
+          </ul>
+        </div><!--end twitter stuff-->
+        <div class="gitstuff">
+          <h2>Github Data:</h2>
+          <ul>
+            <li><strong>Repos: </strong> # of repos</li>
+            <li><strong>Followers: </strong> # of followers</li>
+            <li><strong>Following: </strong> # of your followers</li>
+          </ul>
+        </div><!--end git stuff-->
+      </div><!--end info-->
+    </div><!--end col 3-->
+    <div class="col-sm-9">
+      <div class="moves">
+        <div class="moveslist">
+          <h2 class="text-center">Moves List!</h2>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+          </div><!--end moves list nested row-->
+          <div class="row">
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+            <div class="col-md-3">
+              <div class="thumbnail">
+                <img data-src="holder.js/300x200" alt="...">
+                <div class="caption">
+                  <h4>Move Title</h4>
+                  <p>this is where the description goes</p>
+                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
+                </div><!--end caption-->
+              </div><!--end thumbnail-->
+            </div><!--end col 3-->
+          </div><!--end second row in moveslist-->
+        </div><!--end moves list-->
+      </div><!--end moves-->
+    </div><!--end col 9-->
+  </div><!--first row containing api info and moves list-->
+
+  <div class="row">
+    <div class="col-sm-6 col-sm-offset-6">
+      <div class="col-sm-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">Panel heading</div>
+          <ul class="list-group">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Morbi leo risus</li>
+          </ul>
         </div>
+      </div><!--endpanel column-->
+    </div><!--end offset-->
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-6">
+        <button type="button" class="btn btn-primary btn-lg">Ready!</button>
       </div>
     </div>
-    <div id="craftBoard">
-        <input type="submit" id="clickMe" class="btn btn-lrg btn-success" value="click me">
-    </div>
 
+  </div><!--end second row containing-->
+</div><!-- end maincontainer-->
 
-    <div class="container">
-      <footer>
-      	<p>by: </p>
-        <p>&copy; DevDuel 2013</p>
-      </footer>
-    </div>
+<div class="container">
+  <footer>
+    <p>by: </p>
+    <p>&copy; DevDuel 2013</p>
+  </footer>
+</div>
 </template>
 
 <template name="game">
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">DevDuel</a>
-                </div>
-            </div>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">DevDuel</a>
+    </div>
+  </div>
+</div>
+<div class="jumbotron">
+  <div class="belowNavBar">
+    <div class="alert alert-info" id="alert">
+      <a href="#" class="alert-link">An Alert Box Content</a>
+    </div>
+    <!--******left-side******* -->
+    <div id="left-side">
+      <h2>Player 1</h2>
+      <div id="row-l">
+        <a href="#" class="thumbnail" id="thumbnail-l">
+          <img src="" alt="picture 1">
+        </a>
+        <p>Player 1 life bar</p>
+      </div>
+      <div class="progress" id="progress-l">
+        <div class="progress-bar progress-bar-danger" style="width: 35%">
+          <span class="sr-only">35% Complete (danger)</span>
         </div>
-        <div class="jumbotron">
-            <div class="belowNavBar">
-                <div class="alert alert-info" id="alert">
-                    <a href="#" class="alert-link">An Alert Box Content</a>
-                </div>
-                <!--******left-side******* -->
-                <div id="left-side">
-                    <h2>Player 1</h2>
-                    <div id="row-l">
-                        <a href="#" class="thumbnail" id="thumbnail-l">
-                          <img src="" alt="picture 1">
-                        </a>
-                        <p>Player 1 life bar</p>
-                    </div>
-                    <div class="progress" id="progress-l">
-                        <div class="progress-bar progress-bar-danger" style="width: 35%">
-                            <span class="sr-only">35% Complete (danger)</span>
-                        </div>
-                        <div class="progress-bar progress-bar-warning" style="width: 20%">
-                            <span class="sr-only">20% Complete (warning)</span>
-                        </div>
-                        <div class="progress-bar progress-bar-success" style="width: 10%">
-                            <span class="sr-only">10% Complete (success)</span>
-                        </div>
-                    </div>
-                    <div class="list-group" id="list-group-l">
-                        <a href="#" class="list-group-item active">
-                        <h4 class="list-group-item-heading">Item heading 1</h4>
-                        <p class="list-group-item-text">item1 text</p>
-                       
-                      </a>
-                        <a href="#" class="list-group-item">
-                        <h4 class="list-group-item-heading">Item heading 2</h4>
-                        <p class="list-group-item-text">item2 text</p>
-                       
-                      </a>
-                        <a href="#" class="list-group-item">
-                        <h4 class="list-group-item-heading">Item heading 3</h4>
-                        <p class="list-group-item-text">item3 text</p>
-                       
-                      </a>
-                    </div>
-                </div>
-                <!--*********right side**********-->
-                <div id="right-side">
-                    <h2>Player 2</h2>
-                    <div id="row-r">
-                        <a href="#" class="thumbnail" id="thumbnail-r">
-                          <img src="" alt="picture 2">
-                        </a>
-                        <p>Player 2 life bar</p>
-                    </div>
-                    <div class="progress" id="progress-r">
-                        <div class="progress-bar progress-bar-danger" style="width: 35%">
-                            <span class="sr-only">35% Complete (danger)</span>
-                        </div>
-                        <div class="progress-bar progress-bar-warning" style="width: 20%">
-                            <span class="sr-only">20% Complete (warning)</span>
-                        </div>
-                        <div class="progress-bar progress-bar-success" style="width: 10%">
-                            <span class="sr-only">10% Complete (success)</span>
-                        </div>
-                    </div>
-                    <div class="list-group" id="list-group-r">
-                        <a href="#" class="list-group-item active">
-                                <h4 class="list-group-item-heading">Item heading 1</h4>
-                                <p class="list-group-item-text">item1 text</p>
-                               
-                              </a>
-                        <a href="#" class="list-group-item">
-                                <h4 class="list-group-item-heading">Item heading 2</h4>
-                                <p class="list-group-item-text">item2 text</p>
-                               
-                              </a>
-                        <a href="#" class="list-group-item">
-                                <h4 class="list-group-item-heading">Item heading 3</h4>
-                                <p class="list-group-item-text">item3 text</p>
-                               
-                              </a>
-                    </div>
-                </div>
-            </div>
-        <div class="container" id="container">
-            <footer>
-                <p>by:</p>
-                <p>&copy; DevDuel 2013</p>
-            </footer>
+        <div class="progress-bar progress-bar-warning" style="width: 20%">
+          <span class="sr-only">20% Complete (warning)</span>
         </div>
+        <div class="progress-bar progress-bar-success" style="width: 10%">
+          <span class="sr-only">10% Complete (success)</span>
         </div>
-       
+      </div>
+      <div class="list-group" id="list-group-l">
+        <a href="#" class="list-group-item active">
+          <h4 class="list-group-item-heading">Item heading 1</h4>
+          <p class="list-group-item-text">item1 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 2</h4>
+          <p class="list-group-item-text">item2 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 3</h4>
+          <p class="list-group-item-text">item3 text</p>
+
+        </a>
+      </div>
+    </div>
+    <!--*********right side**********-->
+    <div id="right-side">
+      <h2>Player 2</h2>
+      <div id="row-r">
+        <a href="#" class="thumbnail" id="thumbnail-r">
+          <img src="" alt="picture 2">
+        </a>
+        <p>Player 2 life bar</p>
+      </div>
+      <div class="progress" id="progress-r">
+        <div class="progress-bar progress-bar-danger" style="width: 35%">
+          <span class="sr-only">35% Complete (danger)</span>
+        </div>
+        <div class="progress-bar progress-bar-warning" style="width: 20%">
+          <span class="sr-only">20% Complete (warning)</span>
+        </div>
+        <div class="progress-bar progress-bar-success" style="width: 10%">
+          <span class="sr-only">10% Complete (success)</span>
+        </div>
+      </div>
+      <div class="list-group" id="list-group-r">
+        <a href="#" class="list-group-item active">
+          <h4 class="list-group-item-heading">Item heading 1</h4>
+          <p class="list-group-item-text">item1 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 2</h4>
+          <p class="list-group-item-text">item2 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 3</h4>
+          <p class="list-group-item-text">item3 text</p>
+
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="container" id="container">
+    <footer>
+      <p>by:</p>
+      <p>&copy; DevDuel 2013</p>
+    </footer>
+  </div>
+</div>
+
 </template>
