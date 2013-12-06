@@ -8,6 +8,7 @@
 
   //Gravatar Globals
   picUrl = '';
+  twitterHandle = '';
   hash = '';
   //Github 
   githudBaseURL = 'https://api.github.com/users/'; 
@@ -49,11 +50,15 @@ Meteor on the Client
       },
       'submit #data-form' : function (e) {
         e.preventDefault();
+        var email = $('#gravatar-email').val();
+        getGravatar(email);
+        var gravatarUrl = makeUrl(hash);
+        
         var playerId = Players.insert(
           {
             Name: $('#github-handle').val(),
             Email: $('#gravatar-email').val(),
-            Picture: picUrl,
+            Picture: gravatarUrl,
             Moves: [],
             TwitterId: Meteor.userId(),
             Room: null,
@@ -72,12 +77,24 @@ Meteor on the Client
    
     Template.craft.events({
       'click #clickMe' : function () {
+<<<<<<< HEAD
         var twitterHandle = Meteor.user().services.twitter.screenName;
 
         Meteor.call("checkTwitter", function(error, result) {
             console.log(result);
         })
         
+=======
+        HTTP.call('GET','https://api.github.com/users/kylejson', function (error,result) {
+          if(!error){
+            console.log(result);
+            return true;  
+          } 
+        }); 
+        // Meteor.call('getGithubInfo');
+        // twitterHandle = Meteor.user().services.twitter.screenName
+        // getTwitterInfo();
+>>>>>>> d55e5037327f60a6545b8b057f9cf0cb7db20006
       }
 
       //add to recipe
@@ -141,6 +158,9 @@ Meteor on the Server
       });  
     });
 
+<<<<<<< HEAD
     
+=======
+>>>>>>> d55e5037327f60a6545b8b057f9cf0cb7db20006
   }
 })();
