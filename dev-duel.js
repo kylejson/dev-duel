@@ -82,6 +82,11 @@ Meteor on the Client
             return true;  
           } 
         }); 
+
+        // get twitter call
+        Meteor.call("twitterData", function(error, result) {
+            console.log(result);
+        })        
         // Meteor.call('getGithubInfo');
         // twitterHandle = Meteor.user().services.twitter.screenName
         // getTwitterInfo();
@@ -124,9 +129,54 @@ Router configurations
 Meteor on the Server
 ********************/
   if (Meteor.isServer) {
+
     Meteor.startup(function () {
       // code to run on server at startup
     });
 
+    // Server side methods
+    Meteor.methods({
+      twitterData: function() {
+        this.unblock(); 
+        var twitterHandle = Meteor.user().services.twitter.screenName
+
+        try {
+          var result = HTTP.call("GET", "http://designblooz.com/twitter/api.php/users/show.json",
+            {  
+              params: {
+                screen_name: twitterHandle
+              },
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            }
+
+          );
+          return result; 
+        } catch (e) {
+          // Got a network error, time-out or HTTP error in the 400 or 500 range.
+          return false;
+        }
+      }
+              /*{
+        twitterData: function () {
+          this.unblock(); 
+          var twitterHandle = Meteor.user().services.twitter.screenName
+
+          try {
+            var result = HTTP.call("POST", "https://api.twitter.com/oauth/request_token"  
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+
+            );
+            return result; 
+          } catch (e) {
+            // Got a network error, time-out or HTTP error in the 400 or 500 range.
+            return false;
+          }
+        }
+              },*/
+    });  
   }
 })();
