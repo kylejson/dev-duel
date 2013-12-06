@@ -30,8 +30,7 @@ Gravatar Function
 Meteor on the Client
 ********************/
   if (Meteor.isClient) {
-
-
+    
     //home page client functions/events
     Template.home.events({
       'click .play' : function () {
@@ -77,14 +76,6 @@ Meteor on the Client
    
     Template.craft.events({
       'click #clickMe' : function () {
-<<<<<<< HEAD
-        var twitterHandle = Meteor.user().services.twitter.screenName;
-
-        Meteor.call("checkTwitter", function(error, result) {
-            console.log(result);
-        })
-        
-=======
         HTTP.call('GET','https://api.github.com/users/kylejson', function (error,result) {
           if(!error){
             console.log(result);
@@ -94,7 +85,6 @@ Meteor on the Client
         // Meteor.call('getGithubInfo');
         // twitterHandle = Meteor.user().services.twitter.screenName
         // getTwitterInfo();
->>>>>>> d55e5037327f60a6545b8b057f9cf0cb7db20006
       }
 
       //add to recipe
@@ -107,7 +97,7 @@ Meteor on the Client
 /*********************
 Router configurations
 ********************/
-    Router.configure({
+    Router.configure({ 
       layoutTemplate: 'hello'
     });
       
@@ -135,32 +125,8 @@ Meteor on the Server
 ********************/
   if (Meteor.isServer) {
     Meteor.startup(function () {
-
-      Meteor.methods({
-          checkTwitter: function () {
-            this.unblock();
-
-            try {
-              var result = HTTP.call("GET", "https://api.github.com/users/designblooz",  
-                {
-                  headers: {
-                    'Content-Type': 'application/json', 
-                    'User-Agent': 'Awesome-Octocat-App'
-                  }
-                }
-              );
-              return result; 
-            } catch (e) {
-              // Got a network error, time-out or HTTP error in the 400 or 500 range.
-              return false;
-            }
-          }
-      });  
+      // code to run on server at startup
     });
 
-<<<<<<< HEAD
-    
-=======
->>>>>>> d55e5037327f60a6545b8b057f9cf0cb7db20006
   }
 })();
