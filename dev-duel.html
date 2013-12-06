@@ -118,10 +118,12 @@
     </div>
   </div>
 </div>
-<div id="craftBoard">
-  <input type="submit" id="clickMe" class="btn btn-lrg btn-success" value="click me">
-</div>
-<div class="maincontainer">
+<div class="maincontainer jumbotron">
+
+  <div id="craftBoard">
+    <input type="submit" id="clickMe" class="btn btn-lrg btn-success" value="click me">
+  </div>
+  
   <div class="header">
     <h1 class="text-center">Craft your moves!</h1>
   </div><!--end header-->
@@ -239,22 +241,36 @@
     </div><!--end col 9-->
   </div><!--first row containing api info and moves list-->
 
-  <div class="row">
-    <div class="col-sm-6 col-sm-offset-6">
-      <div class="col-sm-4">
-        <div class="panel panel-default">
-          <div class="panel-heading">Panel heading</div>
-          <ul class="list-group">
-            <li class="list-group-item">Cras justo odio</li>
-            <li class="list-group-item">Dapibus ac facilisis in</li>
-            <li class="list-group-item">Morbi leo risus</li>
-          </ul>
-        </div>
-      </div><!--endpanel column-->
-    </div><!--end offset-->
+  <div class="container movelist">
+    <h2>Your Moves</h2>
+    <div class="list-group" id="list-group-l">
+        <a href="#" class="list-group-item active">
+          <h4 class="list-group-item-heading">Item heading 1</h4>
+          <p class="list-group-item-text">item1 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 2</h4>
+          <p class="list-group-item-text">item2 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 3</h4>
+          <p class="list-group-item-text">item3 text</p>
+
+        </a>
+
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 4</h4>
+          <p class="list-group-item-text">item4 text</p>
+
+        </a>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-sm-6 col-sm-offset-6">
-        <button type="button" class="btn btn-primary btn-lg">Ready!</button>
+        <button type="button" class="btn btn-primary btn-lg ready">Ready!</button>
       </div>
     </div>
 
@@ -292,15 +308,10 @@
         <p>Player 1 life bar</p>
       </div>
       <div class="progress" id="progress-l">
-        <div class="progress-bar progress-bar-danger" style="width: 35%">
-          <span class="sr-only">35% Complete (danger)</span>
+        <div class="progress-bar progress-bar-success" style="width: 90%">
         </div>
-        <div class="progress-bar progress-bar-warning" style="width: 20%">
-          <span class="sr-only">20% Complete (warning)</span>
-        </div>
-        <div class="progress-bar progress-bar-success" style="width: 10%">
-          <span class="sr-only">10% Complete (success)</span>
-        </div>
+      
+  
       </div>
       <div class="list-group" id="list-group-l">
         <a href="#" class="list-group-item active">
@@ -318,6 +329,12 @@
           <p class="list-group-item-text">item3 text</p>
 
         </a>
+
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 4</h4>
+          <p class="list-group-item-text">item4 text</p>
+
+        </a>
       </div>
     </div>
     <!--*********right side**********-->
@@ -330,15 +347,9 @@
         <p>Player 2 life bar</p>
       </div>
       <div class="progress" id="progress-r">
-        <div class="progress-bar progress-bar-danger" style="width: 35%">
-          <span class="sr-only">35% Complete (danger)</span>
+        <div class="progress-bar progress-bar-success" style="width: 90%">
         </div>
-        <div class="progress-bar progress-bar-warning" style="width: 20%">
-          <span class="sr-only">20% Complete (warning)</span>
-        </div>
-        <div class="progress-bar progress-bar-success" style="width: 10%">
-          <span class="sr-only">10% Complete (success)</span>
-        </div>
+    
       </div>
       <div class="list-group" id="list-group-r">
         <a href="#" class="list-group-item active">
@@ -354,6 +365,11 @@
         <a href="#" class="list-group-item">
           <h4 class="list-group-item-heading">Item heading 3</h4>
           <p class="list-group-item-text">item3 text</p>
+
+        </a>
+        <a href="#" class="list-group-item">
+          <h4 class="list-group-item-heading">Item heading 4</h4>
+          <p class="list-group-item-text">item4 text</p>
 
         </a>
       </div>
