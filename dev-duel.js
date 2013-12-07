@@ -36,13 +36,25 @@ Gravatar Function
 Meteor on the Client
 ********************/
   if (Meteor.isClient) {
-    
+    console.log(Meteor.status());
+    if(!Meteor.status().connected) {
+      Meteor.disconnect();
+      Meteor.reconnect();
+    }
     //home page client functions/events
     Template.home.events({
       'click .play' : function () {
         Router.go('/form');
       }
     });
+    
+    // form page created
+    Template.formPage.created = function() {
+      if(Meteor.user() && Meteor.user().profile.Player) {
+        Router.go('/craft');
+      }
+    };
+
     //form page client functions/events
     Template.formPage.events({
       //submit
@@ -58,9 +70,11 @@ Meteor on the Client
         var email = $('#gravatar-email').val();
         getGravatar(email);
         var gravatarUrl = makeUrl(hash);
+        var name = Meteor.user().profile.name;
         
         var playerId = Meteor.users.update (
           { _id: Meteor.userId()}, { $set : {profile: {
+            name: name,
             Player :{ 
                Name: $('#github-handle').val(),
                Email: $('#gravatar-email').val(),
@@ -104,26 +118,57 @@ Meteor on the Client
       'click .ready' : function () {
         console.log("User: " + Meteor.userId());
 
-        var room = Rooms.findOne({PlayerCount: {$lt :2} });
-        if(room) {
-          room.update({ 
-            Players: Meteor.user()
-          });
-        
-        }else{  
-          Rooms.insert({
-            PlayerCount: 0,
-            Players: [],
-            Room : ''
-          });
+        var room = Rooms.findOne({PlayerCount: 1});
+        var currentRoom = Rooms.findOne({Players: {$all: [Meteor.userId()]}});
 
-        } 
+        if(currentRoom) {
+          Router.go('game', {param:currentRoom._id});
+        } else {
+          if(room) {
+            console.log(Rooms);
+            Rooms.update(
+            {_id: room._id},
+              {
+                $push: {Players: Meteor.user()._id}
+              },
+              {
+                $set: {PlayerCount: 2}
+              }
+            );
+          
+          }else{  
+            Rooms.insert({
+              PlayerCount: 1,
+              Players: [Meteor.user()._id],
+              Room : ''
+            });
+
+          } 
+        }
+
 
         // Meteor.call('getGithubInfo');
         // twitterHandle = Meteor.user().services.twitter.screenName
         // getTwitterInfo();
       }
     }); 
+
+    // Game configureation
+    Template.game.rendered = function() {
+      
+    }
+
+    var roomRender = Meteor.render(function() {
+      //Template.game(room);
+    });
+
+    function getRoom(param) {
+      var room = new Object();
+      var player = Meteor.user();
+      return room;
+    }
+
+
 /*********************
 Router configurations
 ********************/
@@ -145,8 +190,11 @@ Router configurations
         template: 'craft'
       });
       this.route('game', {
-        path: '/game',
-        tempalte: 'game' 
+        path: '/game/:param',
+        template: 'game',
+        data: function() {
+          return getRoom(this.params.param);
+        }
       });
     });
   }
@@ -228,7 +276,14 @@ Meteor on the Server
           // Got a network error, time-out or HTTP error in the 400 or 500 range.
           return false;
         }
-      }
+      },
+      room: function(room) {
+        this.unblock();
+        var data = {test:"test"};
+
+        return data;
+      }          
+
     });  
   }
 })();
