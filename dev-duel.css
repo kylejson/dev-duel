@@ -44,6 +44,13 @@ span {
 	top: 30%;
 }
 
+.caption {
+    float: right;
+    width: 400px;
+}
+.move .container {
+    width: 900px;
+}
 /*Nicks css*/
 .belowNavBar {
     width:1024px;
