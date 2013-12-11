@@ -39,14 +39,13 @@ span {
 	font-size: 50px;
 }
 .pic{
-	position: fixed;
+	position: fixed; 
 	left: 60%;
 	top: 30%;
 }
 
 .caption {
-    float: right;
-    width: 400px;
+    height:265px;
 }
 .move .container {
     width: 900px;
@@ -57,11 +56,7 @@ span {
     margin: 20px auto 0;
 }
 /********left-side styling**********/
-.playersDiv {
-    width: 45%;
-    float:left;
-    margin: 30px auto 0;
-}
+
 #alert {
     width: 1024px;
     margin: 0 auto 0;
@@ -126,4 +121,32 @@ footer {
 .moveslist span{
     font-size: 16px;
     margin: none;
+}
+
+/***** Game ****/
+.playersDiv {
+    width: 45%;
+    float:left;
+    margin: 20px 2%;
+    padding:10px;    
+}
+
+.playersDiv .gameMoves {
+    cursor: default;
+    color:#aaa;
+}
+
+.currentPlayer {
+    border: 4px dashed red;
+    background-color: #ccc;
+}
+
+.currentPlayer .gameMoves {
+    cursor:pointer;
+    color:#000;
+}
+
+.currentPlayer .used, .currentPlayer.notSelf .gameMoves {
+    cursor: default;
+    color:#aaa;
 }

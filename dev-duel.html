@@ -128,21 +128,21 @@
         <div class="twitterstuff">
           <h2>Twitter Data:</h2>
           <ul>
-            <li id="tw-followers"><strong>Followers: </strong></li>
-            <li id="tw-following"><strong>Following: </strong></li>
-            <li id="tw-tweets"><strong>Tweets: </strong></li>
-            <li id="tw-favorites"><strong>Favorites: </strong></li>
-            <li id="tw-retweets"><strong>Last Tweet Retweets: </strong></li>
+            <li id="tw-followers"><strong>Followers: </strong><span></span></li>
+            <li id="tw-following"><strong>Following: </strong><span></span></li>
+            <li id="tw-tweets"><strong>Tweets: </strong><span></span></li>
+            <li id="tw-favorites"><strong>Favorites: </strong><span></span></li>
+            <li id="tw-retweets"><strong>Last Tweet Retweets: </strong><span></span></li>
             <li><strong>Total Twitter Points: </strong>{{TwitterPoints}}</li>
           </ul>
         </div><!--end twitter stuff-->
         <div class="gitstuff">
           <h2>Github Data:</h2>
           <ul>
-            <li id="gh-followers"><strong>Followers: </strong></li>
-            <li id="gh-following"><strong>Following: </strong></li>
-            <li id="gh-repos"><strong>Repos: </strong></li>
-            <li id="gh-gists"><strong>Gists: </strong></li>
+            <li id="gh-followers"><strong>Followers: </strong><span></span></li>
+            <li id="gh-following"><strong>Following: </strong><span></span></li>
+            <li id="gh-repos"><strong>Repos: </strong><span></span></li>
+            <li id="gh-gists"><strong>Gists: </strong><span></span></li>
             <li><strong>Total Github Points: </strong>{{GithubPoints}}</li>
           </ul>
         </div><!--end git stuff-->
@@ -155,33 +155,18 @@
         </div>
     </div><!--end col 9-->
   </div><!--first row containing api info and moves list-->
+  <div class="row">
+    <div class="col-sm-3 left"></div>
+    <div class="col-sm-9">
+      <div class="moveslist">
 
-  <div class="container movelist">
-    <h2>Your Moves</h2>
-    <div class="list-group" id="list-group-l">
-        <a href="#" class="list-group-item active">
-          <h4 class="list-group-item-heading">Item heading 1</h4>
-          <p class="list-group-item-text">item1 text</p>
-
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 2</h4>
-          <p class="list-group-item-text">item2 text</p>
-
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 3</h4>
-          <p class="list-group-item-text">item3 text</p>
-
-        </a>
-
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 4</h4>
-          <p class="list-group-item-text">item4 text</p>
-
-        </a>
+      <h2>Your Moves</h2>
+      
+      {{> myMoves}}
       </div>
+
     </div>
+  </div>
 
     <div class="row">
       <div class="col-sm-6 col-sm-offset-6">
@@ -211,7 +196,9 @@
 <div class="jumbotron">
   <div class="belowNavBar">
     <div class="alert alert-info" id="alert">
-      <a href="#" class="alert-link">An Alert Box Content</a>
+      <span style="float:right;line-height:45px;font-weight:bold;font-size:14px;">{{moveAlert}}</span>
+      {{alert}}
+      <div style="clear:left;"></div>
     </div>
 
     {{> players}}
@@ -234,7 +221,7 @@
 
 <template name="players">
   {{#each playersList}}
-    <div class="playersDiv" style="margin:0 2%;">
+    <div class="playersDiv {{currentTurn _id}}">
       <h2>{{profile.name}}</h2>
       <div id="row-l">
         <a href="#" class="thumbnail" id="thumbnail-l">
@@ -243,33 +230,23 @@
         <p>{{profile.name}} life bar</p>
       </div>
       <div class="progress" id="progress-l">
-        <div class="progress-bar progress-bar-success" style="width: 80%">
+        <div class="progress-bar progress-bar-success" style="width: {{profile.Player.Health}}%">
         </div>
       
   
       </div>
-      <div class="list-group" id="list-group-l">
-        <a href="#" class="list-group-item active">
-          <h4 class="list-group-item-heading">Item heading 1</h4>
-          <p class="list-group-item-text">item1 text</p>
+      <div class="list-group roomMoves " id="list-group-l">
+        {{#each gameMovesList _id}}
+        <div class="list-group-item gameMoves {{#if Used}}used{{/if}}" data-title="{{Title}}" {{#if Damage}}data-damage="{{Damage}}"{{else}}data-health="{{Health}}"{{/if}} data-id="{{_id}}">
+          <h4 class="list-group-item-heading">{{Title}}</h4>
+          <p class="list-group-item-text">
+            {{#if Damage}}<b>Damage: </b><span>{{Damage}} </span>{{/if}}
+             {{#if Health}}<b>Health: </b><span> {{Health}} </span>{{/if}}
 
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 2</h4>
-          <p class="list-group-item-text">item2 text</p>
+          </p>
 
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 3</h4>
-          <p class="list-group-item-text">item3 text</p>
-
-        </a>
-
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 4</h4>
-          <p class="list-group-item-text">item4 text</p>
-
-        </a>
+        </div>
+        {{/each}}
       </div>
     </div>
     {{/each}}
@@ -277,21 +254,29 @@
 </template>
 
 <template name="moves"> 
-<div> 
+
+  <div class="row">
   {{#each movesList}}
-    <div class="move container">
+    <div class="col-md-3">
       <div class="thumbnail">
         <div class="caption">
           <h4 class="moveTitle">{{Title}}</h4>
+          <div>
           <p>{{Description}}</p>
-          <b>Twitter Points: </b><p class="twtcost">{{TwitterRequirement}}</p>
+          <b>Twitter Points: </b><span class="twtcost">{{TwitterRequirement}}</span>
           <b>Github Points: </b><span class="gitcost">{{GithubRequirement}}</span>
-          {{#if Damage}}<b>Damage: </b><span>{{Damage}} </span>{{/if}}
+          {{#if Damage}}<b>Damage: </b><span>{{Damage}} </span>{{/if}}<br />
            {{#if Health}}<b>Health: </b><span> {{Health}} </span>{{/if}}
-          <button class="btn btn-info btn-xs twitter">Add Twitter Requirement</button> 
-          <button class="btn btn-warning btn-xs github">Add Github Requirement</button>
+         </div>
           {{#if ReqsMade}}
-          <button class="btn btn-success btn-xs addMove ">Add Move to List</button>
+            {{#if moveAdded false}}
+              <button class="btn btn-success btn-xs addMove" data-twitter="{{TwitterRequirement}}" data-github="{{GithubRequirement}}" data-id="{{_id}}">Add Move to List</button>
+            {{/if}}
+          {{else}}
+          <small style="font-size:11px;color:#888;">Requirement not fulfilled</small>
+          {{/if}}
+          {{#if Added}}
+          <button class="btn btn-danger btn-xs removeMove" data-twitter="{{TwitterRequirement}}" data-github="{{GithubRequirement}}" data-id="{{_id}}">Remove Move from List</button>
           {{/if}}
         </div><!--end caption-->
       </div><!--end thumbnail-->
@@ -299,5 +284,32 @@
   {{else}}
   <h4>No moves</h4>
   {{/each}}
+  </div><!--end second row in moveslist-->
+
 </div>
+</template>
+
+<template name="myMoves">
+  <div class="row">
+  {{#each myMovesList}}
+    <div class="col-md-3">
+      <div class="thumbnail">
+        <div class="caption" style="height:110px;">
+          <h4 class="moveTitle">{{Title}}</h4>
+          <div>
+          {{#if Damage}}<b>Damage: </b><span>{{Damage}} </span>{{/if}}
+           {{#if Health}}<b>Health: </b><span> {{Health}} </span>{{/if}}
+         </div>
+        </div><!--end caption-->
+      </div><!--end thumbnail-->
+    </div><!--end move container-->
+  {{else}}
+  <h4>No moves added</h4>        
+  {{/each}}
+  </div>
+</template>
+
+<template name="gameMoves">
+
+
 </template>

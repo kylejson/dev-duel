@@ -16,6 +16,8 @@
 
   //Globals
   var roomId;
+  var otherPlayer;
+  var moveMsg;
   
   //Gravatar Globals
   TwitterPoint = 0;
@@ -23,6 +25,7 @@
   picUrl = '';
   twitterHandle = '';
   hash = '';
+
 
 /*********************
 Gravatar Function
@@ -40,6 +43,7 @@ Gravatar Function
 Meteor on the Client
 ********************/
   if (Meteor.isClient) {
+    Session.set("moveTxt", "");    
     console.log(Meteor.status());
     if(!Meteor.status().connected) {
       Meteor.disconnect();
@@ -87,52 +91,97 @@ Meteor on the Client
                Room: null,
                Turn: false,
                GithubPoints: 0,
-               TwitterPoints: 0
+               TwitterPoints: 0,
+               Health: 100
              } } } 
             });
           Session.set("currentUser", playerId);
           $('.alert-success').show();
-          Meteor.setTimeout(function(){Router.go('/craft')}, 3000);
+          Meteor.call("insertMoves");
+
+          Router.go('/craft');
         }
     });
         // make calls here to apis returning data to be added to player object.
     Template.craft.created = function() {
+      var getMoves = Moves.find({UserId:Meteor.userId()});
+      var twitterPoints = 0;
+      var githubPoints = 0;
+      getMoves.forEach(function(moves){
+        if(moves.Added) {
+          twitterPoints += moves.TwitterRequirement;
+          githubPoints += moves.GithubRequirement;
+        }
+      });
+
       //Call for Github Data Meteor.user needs a name here
       HTTP.call('GET','https://api.github.com/users/' + Meteor.user().profile.Player.Name, function (error,result) {
           var github = result.data;
           if(!error){
-            $('#gh-followers').append(github.followers);
-            $('#gh-following').append(github.following);
-            $('#gh-repos').append(github.public_repos);
-            $('#gh-gists').append(github.public_gists);
+            $('#gh-followers span').html(github.followers);
+            $('#gh-following span').html(github.following);
+            $('#gh-repos span').html(github.public_repos);
+            $('#gh-gists span').html(github.public_gists);
             var ghPts = github.followers + github.following + github.public_repos + github.public_gists;
             Meteor.users.update (
           { _id: Meteor.userId()}, { $set : {"profile.Player.GithubPoints": ghPts
              } } );
+            Meteor.users.update (Meteor.userId(), { $inc : {'profile.Player.GithubPoints' : -githubPoints}}) //this should be move requirement
+
             return true;  
           } 
-      });
-
+      });   
+      // Call twitter data      
       Meteor.call("twitterData", function(error, result) {
           var twitter = result.data;
-          $('#tw-followers').append(twitter.followers_count);
-          $('#tw-following').append(twitter.friends_count);
-          $('#tw-tweets').append(twitter.statuses_count);
-          $('#tw-retweets').append(twitter.status.retweet_count);
-          $('#tw-favorites').append(twitter.favourites_count);
+          $('#tw-followers span').html(twitter.followers_count);
+          $('#tw-following span').html(twitter.friends_count);
+          $('#tw-tweets span').html(twitter.statuses_count);
+          $('#tw-retweets span').html(twitter.status.retweet_count);
+          $('#tw-favorites span').html(twitter.favourites_count);
           var twtPts = twitter.followers_count + twitter.friends_count + twitter.statuses_count + twitter.status.retweet_count + twitter.favourites_count;
           Meteor.users.update (
           { _id: Meteor.userId()}, { $set : {"profile.Player.TwitterPoints": twtPts
              } } );
-      });  
-      
+          Meteor.users.update (Meteor.userId(), { $inc : {'profile.Player.TwitterPoints' : -twitterPoints}}) //this should be move requirement
+
+      });
+
     };
+
+
+    /*********************
+    Handlebars helpers
+    ********************/
+    Template.moves.moveAdded = function(bool) {
+      return this.Added == bool;
+    };    
    
     Template.craft.TwitterPoints = function () {
+      Meteor.call("twitterData", function(error, result) {
+          var twitter = result.data;
+          $('#tw-followers span').html(twitter.followers_count);
+          $('#tw-following span').html(twitter.friends_count);
+          $('#tw-tweets span').html(twitter.statuses_count);
+          $('#tw-retweets span').html(twitter.status.retweet_count);
+          $('#tw-favorites span').html(twitter.favourites_count);
+      });   
+
       return Meteor.user().profile.Player.TwitterPoints;
     };
 
     Template.craft.GithubPoints = function () {
+      //Call for Github Data Meteor.user needs a name here
+      HTTP.call('GET','https://api.github.com/users/' + Meteor.user().profile.Player.Name, function (error,result) {
+          var github = result.data;
+          if(!error){
+            $('#gh-followers span').html(github.followers);
+            $('#gh-following span').html(github.following);
+            $('#gh-repos span').html(github.public_repos);
+            $('#gh-gists span').html(github.public_gists);
+            return true;  
+          } 
+      });      
       return Meteor.user().profile.Player.GithubPoints;
     };
    
@@ -159,7 +208,7 @@ Meteor on the Client
             Meteor.users.update (
             { _id: Meteor.userId()}, { 
               $set: {
-                "profile.Player.Room" : room._id
+                "profile.Player.Room" : room._id,
               }
             });       
             Router.go('game', {param:room._id});
@@ -168,33 +217,21 @@ Meteor on the Client
             Rooms.insert({
               PlayerCount: 1,
               Players: [Meteor.user()._id],
-              Room : ''
+              Turn : Meteor.userId()
             });
             currentRoom = Rooms.findOne({Players: {$all: [Meteor.userId()]}});
 
             Meteor.users.update (
             { _id: Meteor.userId()}, { 
               $set: {
-                "profile.Player.Room" : currentRoom._id
+                "profile.Player.Room" : currentRoom._id,
               }
             });
             Router.go('game', {param:currentRoom._id});
 
           } 
         }
-        var room = Rooms.findOne({PlayerCount: {$lt :2} });
-        if(room) {
-          room.update({ 
-            Players: Meteor.user()
-          });
-        
-        }else{  
-          Rooms.insert({
-            PlayerCount: 0,
-            Players: [],
-            Room : ''
-          });
-        } 
+
       },
 
       'click .twitter' : function (e) {
@@ -208,15 +245,94 @@ Meteor on the Client
         Meteor.users.update (Meteor.userId(), { $inc : {'profile.Player.GithubPoints' : -10}}) //this should be move requirement
       },
 
-      'click .addMove' : function () {
-        console.log('hi');
+      'click .addMove' : function (e) {
+        e.preventDefault();
+
+        var checkMoves = Moves.find({UserId: Meteor.userId(), Added: true});
+        
+        if(checkMoves.count() < 4) {
+          var twitterPoints = parseInt($(e.currentTarget).attr('data-twitter'));
+          var githubPoints = parseInt($(e.currentTarget).attr('data-github'));
+          var moveId = $(e.currentTarget).attr('data-id');
+          Meteor.users.update(Meteor.userId(), {
+            $inc: {
+              'profile.Player.TwitterPoints' : -twitterPoints,
+              'profile.Player.GithubPoints' : -githubPoints
+            }
+          });
+          Moves.update({_id:moveId}, {
+            $set: {
+              Added: true
+            }
+          });
+        } else {
+          alert("You already added 4 moves!");
+        }
+
+      },
+      'click .removeMove' : function (e) {
+        e.preventDefault();
+        var twitterPoints = parseInt($(e.currentTarget).attr('data-twitter'));
+        var githubPoints = parseInt($(e.currentTarget).attr('data-github'));
+        var moveId = $(e.currentTarget).attr('data-id');
+        Meteor.users.update(Meteor.userId(), {
+          $inc: {
+            'profile.Player.TwitterPoints' : +twitterPoints,
+            'profile.Player.GithubPoints' : +githubPoints
+          }
+        });
+        Moves.update({_id:moveId}, {
+          $set: {
+            Added: false
+          }
+        });
       }
 
     }); 
 
     // Game configureation
     Template.players.playersList = function() {
+
       return Meteor.users.find({"profile.Player.Room" : roomId});
+    }
+    Template.players.currentTurn = function(id) {
+      var getUser = Meteor.user();
+      var getRoom = Rooms.findOne({_id:roomId});
+      if(getRoom.Turn == id && Meteor.userId() != id) {
+        return "currentPlayer notSelf";
+      } else if(getRoom.Turn == id) {
+        return "currentPlayer";
+
+      }
+    }
+
+    Template.game.alert = function() {
+      var getRoom = Rooms.findOne({_id:roomId});
+      var getUser = Meteor.users.findOne({_id:getRoom.Turn});
+
+      if(getRoom.PlayerCount != 2) {
+        return "Waiting for another player";
+      }
+      else {
+        return getUser.profile.name + "'s Turn";
+      }
+
+    }
+
+    Template.game.moveAlert = function() {
+      return Session.get("moveTxt");
+    }
+
+    Template.game.rendered = function() {
+        var getRoom = Rooms.findOne({_id: roomId});
+        var getPlayers = getRoom.Players;
+       if(getRoom.PlayerCount == 2) {
+          for(var i=0;i<2;i++) {
+            if(getPlayers[i] != Meteor.userId()) {
+              otherPlayer = getPlayers[i];
+            }
+          } 
+        }      
     }
 
     Template.game.events({
@@ -240,18 +356,110 @@ Meteor on the Client
         Meteor.users.update (
         { _id: Meteor.userId()}, { 
           $set: {
-            "profile.Player.Room" : ""
+            "profile.Player.Room" : "",
+            "profile.Player.Health" : 100                
           }
         });    
         Router.go('craft');
+
+      },
+      'click .gameMoves' : function(e) {
+        e.preventDefault();
+        var title = $(e.currentTarget).attr('data-title');
+        var damage = parseInt($(e.currentTarget).attr('data-damage'));
+        var health = parseInt($(e.currentTarget).attr('data-health'));
+        var id = $(e.currentTarget).attr('data-id');
+        var damageOrHealth;
+        if(damage) {
+          damageOrHealth = " (Damage: "+damage+")";
+        } else {
+          damageOrHealth = " (Health: "+health+")";
+        }
+
+        Session.set("moveTxt", Meteor.user().profile.name + " used "+title+damageOrHealth);
+
+        Moves.update({_id:id}, {
+          $set: {
+            Used: true
+          }
+        });
+
+        if(damage) {
+          Meteor.users.update({_id:otherPlayer},{
+            $inc: {
+              "profile.Player.Health" : -damage
+            }
+          });
+        } else {
+          if((Meteor.user().profile.Player.Health + health)>100) {
+            health = 100 - Meteor.user().profile.Player.Health;
+          }
+          Meteor.users.update({_id:Meteor.userId()},{
+            $inc: {
+              "profile.Player.Health" : +health
+            }
+          });
+        }
+
+        var turnUpdate;
+        var currentTurn = Rooms.findOne({_id:roomId}).Turn;
+        console.log(currentTurn);
+        if(currentTurn == Meteor.userId()) {
+          Rooms.update({_id:roomId}, {
+            $set: {
+              Turn: otherPlayer
+            }
+          });
+        }
 
       }
     });
 
 
     Template.moves.movesList = function () {
-      return Moves.find({});
+
+      var getUser = Meteor.user();
+
+      var getMoves = Moves.find({UserId: Meteor.userId()});
+      getMoves.forEach(function(moves){
+        if(getUser.profile.Player.TwitterPoints > moves.TwitterRequirement && getUser.profile.Player.GithubPoints > moves.GithubRequirement) {
+          Moves.update({_id: moves._id}, {
+            $set: {
+              ReqsMade: true
+            }
+          });
+        } else if((getUser.profile.Player.TwitterPoints < moves.TwitterRequirement || getUser.profile.Player.GithubPoints < moves.GithubRequirement) && moves.Added == false) {
+          Moves.update({_id: moves._id}, {
+            $set: {
+              ReqsMade: false
+            }
+          });
+        }
+      });
+      return Moves.find({UserId: Meteor.userId()});
     };
+
+    Template.myMoves.myMovesList = function () {
+
+      return Moves.find({UserId: Meteor.userId(), Added: true});
+    };
+
+
+    Template.players.gameMovesList = function (id, options) {
+      var getMoves = Moves.find({UserId: id, Used: true});
+      if(getMoves && getMoves.count() == 4) {
+        getMoves.forEach(function(move){
+          Moves.update({_id: move._id},{
+            $set: {
+              Used: false
+            }
+          })
+        });
+      }
+      return Moves.find({UserId: id, Added: true});
+    };
+
+
 /*********************
 Router configurations
 ********************/
@@ -277,6 +485,8 @@ Router configurations
         template: 'game',
         action: function() {
           roomId = this.params.param;
+
+          
           this.render();
         }
       });
@@ -286,81 +496,10 @@ Router configurations
 Meteor on the Server
 ********************/
   if (Meteor.isServer) {
-
     Meteor.startup(function () {
       // code to run on server at startup
-      Moves.insert({
-        Title: 'Git Fork',
-        Description : 'Fork your opponents repo and make it better. Deals Damage.',
-        TwitterRequirement : 300,
-        GithubRequirement : 5,
-        ReqsMade: false,
-        Used: false,
-        Damage: 20
-      });
-      Moves.insert({
-        Title: 'Got Retweeted',
-        Description : '@fat retweeted you! Restores Health.',
-        TwitterRequirement : 100,
-        GithubRequirement : 2,
-        ReqsMade: false,
-        Used: false,
-        Health: 40
-      });
-      Moves.insert({
-        Title: 'Pushed to Master',
-        Description : 'You push code to production, You\'re a boss! Deals Damage.',
-        TwitterRequirement : 500,
-        GithubRequirement : 15,
-        ReqsMade: false,
-        Used: false,
-        Damage: 50
-      });
-      Moves.insert({
-        Title: 'Merge Conflict Resolved',
-        Description : 'Resolved a merge conflict. Restores Health.',
-        TwitterRequirement : 400,
-        GithubRequirement : 3,
-        ReqsMade: false,
-        Used: false,
-        Health: 50
-      });
-      Moves.insert({
-        Title: 'Git Push',
-        Description : 'Push your opponent. Deals Damage',
-        TwitterRequirement : 100,
-        GithubRequirement : 5,
-        ReqsMade: false,
-        Used: false,
-        Damage: 30
-      });
-      Moves.insert({
-        Title: 'Troll',
-        Description : 'Left a snarky comment on opponents gist. Deals Damage',
-        TwitterRequirement : 100,
-        GithubRequirement : 1,
-        ReqsMade: false,
-        Used: false,
-        Damage: 10
-      });
-      Moves.insert({
-        Title: 'Starred Repo',
-        Description : 'Someone starred your repo! Restores Health',
-        TwitterRequirement : 750,
-        GithubRequirement : 10,
-        ReqsMade: false,
-        Used: false,
-        Health: 20
-      });
-      Moves.insert({
-        Title: 'Unfollow',
-        Description : 'Unfollow your opponent. Deals Damage',
-        TwitterRequirement : 1000,
-        GithubRequirement : 3,
-        ReqsMade: false,
-        Used: false,
-        Damage: 20
-      });
+
+
     });
 
     Meteor.users.allow({
@@ -414,8 +553,102 @@ Meteor on the Server
         var data = {test:"test"};
 
         return data;
-      }          
+      },
+      insertMoves: function() {
+        var moveFind = Moves.find({"UserId": Meteor.userId()});
+        if(moveFind.count() == 0) {
+            Moves.insert({
+              Title: 'Git Fork',
+              Description : 'Fork your opponents repo and make it better. Deals Damage.',
+              TwitterRequirement : 300,
+              GithubRequirement : 5,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Damage: 20,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Got Retweeted',
+              Description : '@fat retweeted you! Restores Health.',
+              TwitterRequirement : 100,
+              GithubRequirement : 2,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Health: 40,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Pushed to Master',
+              Description : 'You push code to production, You\'re a boss! Deals Damage.',
+              TwitterRequirement : 500,
+              GithubRequirement : 15,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Damage: 50,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Merge Conflict Resolved',
+              Description : 'Resolved a merge conflict. Restores Health.',
+              TwitterRequirement : 400,
+              GithubRequirement : 3,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Health: 50,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Git Push',
+              Description : 'Push your opponent. Deals Damage',
+              TwitterRequirement : 100,
+              GithubRequirement : 5,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Damage: 30,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Troll',
+              Description : 'Left a snarky comment on opponents gist. Deals Damage',
+              TwitterRequirement : 100,
+              GithubRequirement : 1,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Damage: 10,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Starred Repo',
+              Description : 'Someone starred your repo! Restores Health',
+              TwitterRequirement : 750,
+              GithubRequirement : 10,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Health: 20,
+              UserId: Meteor.userId()
+            });
+            Moves.insert({
+              Title: 'Unfollow',
+              Description : 'Unfollow your opponent. Deals Damage',
+              TwitterRequirement : 1000,
+              GithubRequirement : 3,
+              ReqsMade: false,
+              Used: false,
+              Added: false,
+              Damage: 20,
+              UserId: Meteor.userId()
+            });        
+        }        
+      }
 
     });  
+
   }
 })();
