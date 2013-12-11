@@ -225,12 +225,13 @@
 
     {{#winLose profile.Player.Health}}
     <div class="playersDiv {{currentTurn _id}}">
-      <h2>{{profile.name}}</h2>
       <div id="row-l">
-        <a href="#" class="thumbnail" id="thumbnail-l">
+        <a href="#" class="thumbnail pull-left" id="thumbnail-l">
           <img src="{{profile.Player.Picture}}" alt="picture 1">
         </a>
-        <p>{{profile.name}} life bar</p>
+        <h2>{{profile.name}}</h2>
+        <div class="clearfix"></div>
+        <p style="margin:0;font-weight:bold;font-style:italics;">Health</p>
       </div>
       <div class="progress" id="progress-l">
         <div class="progress-bar progress-bar-success" style="width: {{profile.Player.Health}}%">
@@ -253,13 +254,16 @@
       </div>
     </div>
     {{else}}
+
+
     <div class="playersDiv {{currentTurn _id}}">
-      <h2>{{profile.name}} LOST</h2>
       <div id="row-l">
-        <a href="#" class="thumbnail" id="thumbnail-l">
+        <a href="#" class="thumbnail pull-left" id="thumbnail-l">
           <img src="{{profile.Player.Picture}}" alt="picture 1">
         </a>
-        <p>{{profile.name}} life bar</p>
+        <h2>{{profile.name}} LOST</h2>
+        <div class="clearfix"></div>
+        <p style="margin:0;font-weight:bold;font-style:italics;">Health</p>
       </div>
       <div class="progress" id="progress-l">
         <div class="progress-bar progress-bar-success" style="width: {{profile.Player.Health}}%">
@@ -267,6 +271,7 @@
       
   
       </div>
+
     </div>
 
     {{/winLose}}

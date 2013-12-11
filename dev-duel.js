@@ -75,31 +75,53 @@ Meteor on the Client
       },
       'submit #data-form' : function (e) {
         e.preventDefault();
-        var email = $('#gravatar-email').val();
-        getGravatar(email);
-        var gravatarUrl = makeUrl(hash);
-        var name = Meteor.user().profile.name;
-        
-        var playerId = Meteor.users.update (
-          { _id: Meteor.userId()}, { $set : {profile: {
-            name: name,
-            Player :{ 
-               Name: $('#github-handle').val(),
-               Email: $('#gravatar-email').val(),
-               Picture: gravatarUrl,
-               Moves: [],
-               Room: null,
-               Turn: false,
-               GithubPoints: 0,
-               TwitterPoints: 0,
-               Health: 100
-             } } } 
-            });
-          Session.set("currentUser", playerId);
-          $('.alert-success').show();
+        var emailpattern = /^[a-zA-Z0-9_.,]+@[a-zA-Z0-9_]+(\.([a-zA-Z0-9_]{2,3})+)+$/;
 
-          Router.go('/craft');
+        var messages = "";
+             
+        if (!emailpattern.test($("#gravatar-email").val())) {
+            // when doesnt match
+            messages += ("\n Email address should be fully valid email address \n (eg. someone@somewhere.com");
         }
+
+        //Call for Github Data Meteor.user needs a name here
+          HTTP.call('GET','https://api.github.com/users/' + $("#github-handle").val(), function(error, result){
+            if(!error) {
+              var email = $('#gravatar-email').val();
+              getGravatar(email);
+              var gravatarUrl = makeUrl(hash);
+              var name = Meteor.user().profile.name;
+              
+              var playerId = Meteor.users.update (
+                { _id: Meteor.userId()}, { $set : {profile: {
+                  name: name,
+                  Player :{ 
+                     Name: $('#github-handle').val(),
+                     Email: $('#gravatar-email').val(),
+                     Picture: gravatarUrl,
+                     Moves: [],
+                     Room: null,
+                     Turn: false,
+                     GithubPoints: 0,
+                     TwitterPoints: 0,
+                     Health: 100
+                   } } } 
+                  });
+                Session.set("currentUser", playerId);
+                $('.alert-success').show();
+
+                Router.go('/craft');
+            } else {
+              messages += ("\n GitHub account not available");
+              alert(messages);
+            } 
+          });
+       
+
+
+
+
+      }
     });
         // make calls here to apis returning data to be added to player object.
     Template.craft.created = function() {
@@ -116,6 +138,7 @@ Meteor on the Client
       });
 
       //Call for Github Data Meteor.user needs a name here
+
       HTTP.call('GET','https://api.github.com/users/' + Meteor.user().profile.Player.Name, function (error,result) {
           var github = result.data;
           if(!error){
@@ -193,9 +216,16 @@ Meteor on the Client
 
         var room = Rooms.findOne({PlayerCount: 1});
         var currentRoom = Meteor.user().profile.Player.Room;
+        var findRoom = Rooms.findOne({_id: currentRoom});
 
-        if(currentRoom) {
+        if(currentRoom && findRoom) {
           Router.go('game', {param:currentRoom});
+        } else if(currentRoom) {
+          Meteor.users.update({_id:Meteor.userId()}, {
+            $set:{
+              "profile.Player.Room":""
+            }
+          })
         } else {
           if(room) {
             console.log(Rooms);
@@ -322,8 +352,10 @@ Meteor on the Client
       if(getRoom.PlayerCount != 2) {
         return "Waiting for another player";
       }
-      else {
-        return getUser.profile.name + "'s Turn";
+      else if(getRoom.Turn == Meteor.userId()) {
+        return "My Turn";
+      } else {
+        return getUser.profile.name + "'s Turn";        
       }
 
     }
@@ -346,6 +378,10 @@ Meteor on the Client
 
     Template.game.events({
       'click #leaveRoom' : function() {
+
+        Meteor.call("resetUsed", Meteor.userId());
+        Meteor.call("resetUsed", otherPlayer);
+
         var getRoom = Rooms.findOne({_id: roomId});
         if(getRoom.PlayerCount == 2) {
           Rooms.update(
@@ -354,7 +390,8 @@ Meteor on the Client
                 Players: Meteor.userId()              
               },
               $set: {
-                PlayerCount: 1
+                PlayerCount: 1,
+                Turn: otherPlayer
               }
             }
 
@@ -374,57 +411,61 @@ Meteor on the Client
             "profile.Player.Health" : 100
           }
         });
+
         Router.go('craft');
 
       },
       'click .gameMoves' : function(e) {
         e.preventDefault();
-        var title = $(e.currentTarget).attr('data-title');
-        var damage = parseInt($(e.currentTarget).attr('data-damage'));
-        var health = parseInt($(e.currentTarget).attr('data-health'));
-        var id = $(e.currentTarget).attr('data-id');
-        var damageOrHealth;
-        if(damage) {
-          damageOrHealth = " (Damage: "+damage+")";
-        } else {
-          damageOrHealth = " (Health: "+health+")";
-        }
-
-        Session.set("moveTxt", Meteor.user().profile.name + " used "+title+damageOrHealth);
-
-        Moves.update({_id:id}, {
-          $set: {
-            Used: true
+        if($(e.currentTarget).css("cursor") != "default") {
+          var title = $(e.currentTarget).attr('data-title');
+          var damage = parseInt($(e.currentTarget).attr('data-damage'));
+          var health = parseInt($(e.currentTarget).attr('data-health'));
+          var id = $(e.currentTarget).attr('data-id');
+          var damageOrHealth;
+          if(damage) {
+            damageOrHealth = " (Damage: "+damage+")";
+          } else {
+            damageOrHealth = " (Health: "+health+")";
           }
-        });
 
-        if(damage) {
-          Meteor.users.update({_id:otherPlayer},{
-            $inc: {
-              "profile.Player.Health" : -damage
-            }
-          });
-        } else {
-          if((Meteor.user().profile.Player.Health + health)>100) {
-            health = 100 - Meteor.user().profile.Player.Health;
-          }
-          Meteor.users.update({_id:Meteor.userId()},{
-            $inc: {
-              "profile.Player.Health" : +health
-            }
-          });
-        }
+          Session.set("moveTxt", Meteor.user().profile.name + " used "+title+damageOrHealth);
 
-        var turnUpdate;
-        var currentTurn = Rooms.findOne({_id:roomId}).Turn;
-        console.log(currentTurn);
-        if(currentTurn == Meteor.userId()) {
-          Rooms.update({_id:roomId}, {
+          Moves.update({_id:id}, {
             $set: {
-              Turn: otherPlayer
+              Used: true
             }
           });
+
+          if(damage) {
+            Meteor.users.update({_id:otherPlayer},{
+              $inc: {
+                "profile.Player.Health" : -damage
+              }
+            });
+          } else {
+            if((Meteor.user().profile.Player.Health + health)>100) {
+              health = 100 - Meteor.user().profile.Player.Health;
+            }
+            Meteor.users.update({_id:Meteor.userId()},{
+              $inc: {
+                "profile.Player.Health" : +health
+              }
+            });
+          }
+
+          var turnUpdate;
+          var currentTurn = Rooms.findOne({_id:roomId}).Turn;
+          console.log(currentTurn);
+          if(currentTurn == Meteor.userId()) {
+            Rooms.update({_id:roomId}, {
+              $set: {
+                Turn: otherPlayer
+              }
+            });
+          }
         }
+
 
       }
     });
@@ -470,6 +511,7 @@ Meteor on the Client
           })
         });
       }
+
       return Moves.find({UserId: id, Added: true});
     };
 
@@ -567,6 +609,18 @@ Meteor on the Server
         var data = {test:"test"};
 
         return data;
+      },
+      resetUsed: function(id) {
+        var getMoves = Moves.find({UserId: id, Used: true});
+        if(getMoves) {
+          getMoves.forEach(function(move){
+            Moves.update({_id: move._id},{
+              $set: {
+                Used: false
+              }
+            })
+          });
+        }
       },
       insertMoves: function() {
         var moveFind = Moves.find({"UserId": Meteor.userId()});
