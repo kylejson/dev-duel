@@ -46,7 +46,6 @@ Meteor on the Client
     Session.set("moveTxt", "");    
     console.log(Meteor.status());
     if(!Meteor.status().connected) {
-      Meteor.disconnect();
       Meteor.reconnect();
     }
     //home page client functions/events
@@ -216,7 +215,10 @@ Meteor on the Client
 
         var room = Rooms.findOne({PlayerCount: 1});
         var currentRoom = Meteor.user().profile.Player.Room;
-        var findRoom = Rooms.findOne({_id: currentRoom});
+        var findRoom;
+        if(currentRoom) {
+          findRoom = Rooms.findOne({_id: currentRoom})          
+        }
 
         if(currentRoom && findRoom) {
           Router.go('game', {param:currentRoom});
@@ -228,7 +230,6 @@ Meteor on the Client
           })
         } else {
           if(room) {
-            console.log(Rooms);
             Rooms.update(
             {_id: room._id},
               {
@@ -248,7 +249,8 @@ Meteor on the Client
             Rooms.insert({
               PlayerCount: 1,
               Players: [Meteor.user()._id],
-              Turn : Meteor.userId()
+              Turn : Meteor.userId(),
+              message : ""
             });
             currentRoom = Rooms.findOne({Players: {$all: [Meteor.userId()]}});
 
@@ -361,7 +363,8 @@ Meteor on the Client
     }
 
     Template.game.moveAlert = function() {
-      return Session.get("moveTxt");
+      var getRoom = Rooms.findOne({_id:roomId});
+      return getRoom.message;
     }
 
     Template.game.rendered = function() {
@@ -429,7 +432,8 @@ Meteor on the Client
             damageOrHealth = " (Health: "+health+")";
           }
 
-          Session.set("moveTxt", Meteor.user().profile.name + " used "+title+damageOrHealth);
+
+          Rooms.update({_id: roomId}, { $set: {'message': Meteor.user().profile.name + " used "+title+damageOrHealth }})
 
           Moves.update({_id:id}, {
             $set: {
