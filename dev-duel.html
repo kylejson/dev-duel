@@ -133,6 +133,7 @@
             <li id="tw-tweets"><strong>Tweets: </strong></li>
             <li id="tw-favorites"><strong>Favorites: </strong></li>
             <li id="tw-retweets"><strong>Last Tweet Retweets: </strong></li>
+            <li><strong>Total Twitter Points: </strong>{{TwitterPoints}}</li>
           </ul>
         </div><!--end twitter stuff-->
         <div class="gitstuff">
@@ -142,97 +143,16 @@
             <li id="gh-following"><strong>Following: </strong></li>
             <li id="gh-repos"><strong>Repos: </strong></li>
             <li id="gh-gists"><strong>Gists: </strong></li>
+            <li><strong>Total Github Points: </strong>{{GithubPoints}}</li>
           </ul>
         </div><!--end git stuff-->
       </div><!--end info-->
     </div><!--end col 3-->
     <div class="col-sm-9">
-      <div class="moves">
         <div class="moveslist">
           <h2 class="text-center">Moves List!</h2>
-          <div class="row">
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Push Production</h4>
-                  <p>You just pushed your code into production. Adds Health</p>
-                  <p><b>Requires: </b><span class="req-tweets"> 10 twitter followers</span></p>
-                  <b>Requires: </b><span class="req-repos">2 git repos</span>
-                  <b>Health: </b><span class=""></span> 
-                  <button href="#" class="btn btn-primary btn-sm" role="button">Add followers</button>
-                  <button href="#" class="btn btn-primary btn-sm" role="button">Add repos</button>
-                  <button href="#" class="btn btn-success btn-sm" role="button">Add Move</button>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Git Fork</h4>
-                  <p>Fork your opponents repo to make it better. Does Damage</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-          </div><!--end moves list nested row-->
-          <div class="row">
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-            <div class="col-md-3">
-              <div class="thumbnail">
-                <div class="caption">
-                  <h4>Move Title</h4>
-                  <p>this is where the description goes</p>
-                  <p><a href="#" class="btn btn-success" role="button">Button</a> <a href="#" class="btn btn-danger" role="button">Button</a></p>
-                </div><!--end caption-->
-              </div><!--end thumbnail-->
-            </div><!--end col 3-->
-          </div><!--end second row in moveslist-->
-        </div><!--end moves list-->
-      </div><!--end moves-->
+          {{> moves}}
+        </div>
     </div><!--end col 9-->
   </div><!--first row containing api info and moves list-->
 
@@ -377,5 +297,30 @@
     </footer>
   </div>
 </div>
+</template>
 
+<template name="moves"> 
+<div> 
+  {{#each movesList}}
+    <div class="move container">
+      <div class="thumbnail">
+        <div class="caption">
+          <h4 class="moveTitle">{{Title}}</h4>
+          <p>{{Description}}</p>
+          <b>Twitter Points: </b><p class="twtcost">{{TwitterRequirement}}</p>
+          <b>Github Points: </b><span class="gitcost">{{GithubRequirement}}</span>
+          {{#if Damage}}<b>Damage: </b><span>{{Damage}} </span>{{/if}}
+           {{#if Health}}<b>Health: </b><span> {{Health}} </span>{{/if}}
+          <button class="btn btn-info btn-xs twitter">Add Twitter Requirement</button> 
+          <button class="btn btn-warning btn-xs github">Add Github Requirement</button>
+          {{#if ReqsMade}}
+          <button class="btn btn-success btn-xs addMove ">Add Move to List</button>
+          {{/if}}
+        </div><!--end caption-->
+      </div><!--end thumbnail-->
+    </div><!--end move container-->
+  {{else}}
+  <h4>No moves</h4>
+  {{/each}}
+</div>
 </template>
