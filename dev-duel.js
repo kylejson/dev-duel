@@ -4,6 +4,7 @@
 ********************/
   //rooms with hold game session and two player objects
   Rooms = new Meteor.Collection("rooms");
+  Moves = new Meteor.Collection("moves");
   Move = {
     init: function(title, damage, used) {
       this.title = title;
@@ -71,6 +72,7 @@ Meteor on the Client
              } } } 
             });
           $('.alert-success').show();
+          Session.set('currentUser', playerId);
           Meteor.setTimeout(function(){Router.go('/craft')}, 5000);
         }
     });
@@ -170,30 +172,6 @@ Meteor on the Server
 
     // Server side methods
     Meteor.methods({
- /*      twitterData: function() {
-        this.unblock(); 
-        var twitterHandle = Meteor.user().services.twitter.screenName
-
-        try {
-          var result = HTTP.call("GET", "http://designblooz.com/twitter/api.php/users/show.json",
-            {  
-              params: {
-                screen_name: twitterHandle
-              },
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            }
-
-          );
-          return result; 
-        } catch (e) {
-          // Got a network error, time-out or HTTP error in the 400 or 500 range.
-          return false;
-        }
-      }
-
-             {*/
       twitterData: function () {
         this.unblock(); 
         var twitterHandle = Meteor.user().services.twitter.screenName
