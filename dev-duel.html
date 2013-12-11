@@ -119,38 +119,39 @@
   </div>
 </div>
 <div class="maincontainer jumbotron">
-  <div class="header">
-    <h1 class="text-center">Craft your moves!</h1>
-  </div><!--end header-->
+  <div class="page-header" style="border-bottom:1px solid #ccc;margin:0px 0 20px 0">
+    <h1 style="text-align:center;">Craft your moves!</h1>
+  </div>  
+
   <div class="row">
     <div class="col-sm-3 left">
       <div class="info">
         <div class="twitterstuff">
           <h2>Twitter Data:</h2>
-          <ul>
-            <li id="tw-followers"><strong>Followers: </strong><span></span></li>
-            <li id="tw-following"><strong>Following: </strong><span></span></li>
-            <li id="tw-tweets"><strong>Tweets: </strong><span></span></li>
-            <li id="tw-favorites"><strong>Favorites: </strong><span></span></li>
-            <li id="tw-retweets"><strong>Last Tweet Retweets: </strong><span></span></li>
-            <li><strong>Total Twitter Points: </strong>{{TwitterPoints}}</li>
+          <ul class="list-group" style="font-size:16px;">
+            <li class="list-group-item" id="tw-followers"><strong>Followers: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="tw-following"><strong>Following: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="tw-tweets"><strong>Tweets: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="tw-favorites"><strong>Favorites: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="tw-retweets"><strong>Last Tweet Retweets: </strong><span class="badge"></span></li>
+            <li class="list-group-item active"><strong>Total Twitter Points: </strong><span class="badge">{{TwitterPoints}}</span></li>
           </ul>
         </div><!--end twitter stuff-->
         <div class="gitstuff">
           <h2>Github Data:</h2>
-          <ul>
-            <li id="gh-followers"><strong>Followers: </strong><span></span></li>
-            <li id="gh-following"><strong>Following: </strong><span></span></li>
-            <li id="gh-repos"><strong>Repos: </strong><span></span></li>
-            <li id="gh-gists"><strong>Gists: </strong><span></span></li>
-            <li><strong>Total Github Points: </strong>{{GithubPoints}}</li>
+          <ul class="list-group" style="font-size:16px;">
+            <li class="list-group-item" id="gh-followers"><strong>Followers: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="gh-following"><strong>Following: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="gh-repos"><strong>Repos: </strong><span class="badge"></span></li>
+            <li class="list-group-item" id="gh-gists"><strong>Gists: </strong><span class="badge"></span></li>
+            <li class="list-group-item active"><strong>Total Github Points: </strong><span class="badge">{{GithubPoints}}</span></li>
           </ul>
         </div><!--end git stuff-->
       </div><!--end info-->
     </div><!--end col 3-->
     <div class="col-sm-9">
         <div class="moveslist">
-          <h2 class="text-center">Moves List!</h2>
+          <h2 class="text-center" style="border-bottom:1px dashed #ccc;padding-bottom:10px">Moves List!</h2>
           {{> moves}}
         </div>
     </div><!--end col 9-->
@@ -160,7 +161,7 @@
     <div class="col-sm-9">
       <div class="moveslist">
 
-      <h2>Your Moves</h2>
+      <h2 class="text-center" style="border-bottom:1px dashed #ccc;padding-bottom:10px">Your Moves</h2>
       
       {{> myMoves}}
       </div>
@@ -169,7 +170,7 @@
   </div>
 
     <div class="row">
-      <div class="col-sm-6 col-sm-offset-6">
+      <div class="col-sm-6 col-sm-offset-7">
         <button type="button" class="btn btn-primary btn-lg ready">Ready!</button>
       </div>
     </div>
@@ -221,6 +222,8 @@
 
 <template name="players">
   {{#each playersList}}
+
+    {{#winLose profile.Player.Health}}
     <div class="playersDiv {{currentTurn _id}}">
       <h2>{{profile.name}}</h2>
       <div id="row-l">
@@ -249,6 +252,25 @@
         {{/each}}
       </div>
     </div>
+    {{else}}
+    <div class="playersDiv {{currentTurn _id}}">
+      <h2>{{profile.name}} LOST</h2>
+      <div id="row-l">
+        <a href="#" class="thumbnail" id="thumbnail-l">
+          <img src="{{profile.Player.Picture}}" alt="picture 1">
+        </a>
+        <p>{{profile.name}} life bar</p>
+      </div>
+      <div class="progress" id="progress-l">
+        <div class="progress-bar progress-bar-success" style="width: {{profile.Player.Health}}%">
+        </div>
+      
+  
+      </div>
+    </div>
+
+    {{/winLose}}
+
     {{/each}}
 
 </template>

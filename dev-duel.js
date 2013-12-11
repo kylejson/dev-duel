@@ -97,13 +97,14 @@ Meteor on the Client
             });
           Session.set("currentUser", playerId);
           $('.alert-success').show();
-          Meteor.call("insertMoves");
 
           Router.go('/craft');
         }
     });
         // make calls here to apis returning data to be added to player object.
     Template.craft.created = function() {
+      Meteor.call("insertMoves");
+
       var getMoves = Moves.find({UserId:Meteor.userId()});
       var twitterPoints = 0;
       var githubPoints = 0;
@@ -306,6 +307,14 @@ Meteor on the Client
       }
     }
 
+    Template.players.winLose = function(health, options) {
+      if(health <= 0) {
+        return options.inverse(this);
+      } else {
+        return options.fn(this);
+      }
+    }
+
     Template.game.alert = function() {
       var getRoom = Rooms.findOne({_id:roomId});
       var getUser = Meteor.users.findOne({_id:getRoom.Turn});
@@ -359,7 +368,12 @@ Meteor on the Client
             "profile.Player.Room" : "",
             "profile.Player.Health" : 100                
           }
-        });    
+        });
+        Meteor.users.update({_id:otherPlayer},{
+          $set: {
+            "profile.Player.Health" : 100
+          }
+        });
         Router.go('craft');
 
       },
@@ -571,7 +585,7 @@ Meteor on the Server
             Moves.insert({
               Title: 'Got Retweeted',
               Description : '@fat retweeted you! Restores Health.',
-              TwitterRequirement : 100,
+              TwitterRequirement : 600,
               GithubRequirement : 2,
               ReqsMade: false,
               Used: false,
@@ -598,7 +612,7 @@ Meteor on the Server
               ReqsMade: false,
               Used: false,
               Added: false,
-              Health: 50,
+              Damage: 20,
               UserId: Meteor.userId()
             });
             Moves.insert({

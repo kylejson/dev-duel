@@ -150,3 +150,18 @@ footer {
     cursor: default;
     color:#aaa;
 }
+
+.badge {
+    font-size:16px;
+    margin-top:4px;
+}
+
+.list-group-item.active {
+    background-color:#428bca;
+    color:#fff;
+}
+
+.list-group-item.active .badge {
+    background-color:#fff;
+    color:#428bca;
+}
