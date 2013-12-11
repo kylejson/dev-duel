@@ -50,7 +50,7 @@ span {
     margin: 20px auto 0;
 }
 /********left-side styling**********/
-#left-side {
+.playersDiv {
     width: 45%;
     float:left;
     margin: 30px auto 0;

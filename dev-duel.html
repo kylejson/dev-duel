@@ -293,14 +293,34 @@
     <div class="alert alert-info" id="alert">
       <a href="#" class="alert-link">An Alert Box Content</a>
     </div>
-    <!--******left-side******* -->
-    <div id="left-side">
-      <h2>Player 1</h2>
+
+    {{> players}}
+
+    <div style="width:600px;margin:0 auto;padding:30px 0 0 0;clear:both;">
+      <button type="button" id="leaveRoom" class="btn btn-lg btn-danger" style="width:600px;margin:0 auto">Leave Room</button>
+    </div>
+    </div>
+
+  </div>
+  <div class="container" id="container">
+    <footer>
+      <p>by:</p>
+      <p>&copy; DevDuel 2013</p>
+    </footer>
+  </div>
+</div>
+
+</template>
+
+<template name="players">
+  {{#each playersList}}
+    <div class="playersDiv" style="margin:0 2%;">
+      <h2>{{profile.name}}</h2>
       <div id="row-l">
         <a href="#" class="thumbnail" id="thumbnail-l">
-          <img src="" alt="picture 1">
+          <img src="{{profile.Player.Picture}}" alt="picture 1">
         </a>
-        <p>Player 1 life bar</p>
+        <p>{{profile.name}} life bar</p>
       </div>
       <div class="progress" id="progress-l">
         <div class="progress-bar progress-bar-success" style="width: 80%">
@@ -332,50 +352,5 @@
         </a>
       </div>
     </div>
-    <!--*********right side**********-->
-    <div id="right-side">
-      <h2>Player 2</h2>
-      <div id="row-r">
-        <a href="#" class="thumbnail" id="thumbnail-r">
-          <img src="" alt="picture 2">
-        </a>
-        <p>Player 2 life bar</p>
-      </div>
-      <div class="progress" id="progress-r">
-        <div class="progress-bar progress-bar-success" style="width: 90%">
-        </div>
-    
-      </div>
-      <div class="list-group" id="list-group-r">
-        <a href="#" class="list-group-item active">
-          <h4 class="list-group-item-heading">Item heading 1</h4>
-          <p class="list-group-item-text">item1 text</p>
-
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 2</h4>
-          <p class="list-group-item-text">item2 text</p>
-
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 3</h4>
-          <p class="list-group-item-text">item3 text</p>
-
-        </a>
-        <a href="#" class="list-group-item">
-          <h4 class="list-group-item-heading">Item heading 4</h4>
-          <p class="list-group-item-text">item4 text</p>
-
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="container" id="container">
-    <footer>
-      <p>by:</p>
-      <p>&copy; DevDuel 2013</p>
-    </footer>
-  </div>
-</div>
-
+    {{/each}}
 </template>
