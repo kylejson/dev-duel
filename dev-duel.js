@@ -349,34 +349,41 @@ Meteor on the Client
 
     Template.game.alert = function() {
       var getRoom = Rooms.findOne({_id:roomId});
-      var getUser = Meteor.users.findOne({_id:getRoom.Turn});
 
-      if(getRoom.PlayerCount != 2) {
-        return "Waiting for another player";
-      }
-      else if(getRoom.Turn == Meteor.userId()) {
-        return "My Turn";
-      } else {
-        return getUser.profile.name + "'s Turn";        
-      }
+      if(getRoom) {
+        var getUser = Meteor.users.findOne({_id:getRoom.Turn});
+
+        if(getRoom.PlayerCount != 2) {
+          return "Waiting for another player";
+        }
+        else if(getRoom.Turn == Meteor.userId()) {
+          return "My Turn";
+        } else {
+          return getUser && getUser.profile && getUser.profile.name + "'s Turn";        
+        }     
+        }
+
 
     }
 
     Template.game.moveAlert = function() {
       var getRoom = Rooms.findOne({_id:roomId});
-      return getRoom.message;
+      return getRoom && getRoom.message || [];
     }
 
     Template.game.rendered = function() {
         var getRoom = Rooms.findOne({_id: roomId});
-        var getPlayers = getRoom.Players;
-       if(getRoom.PlayerCount == 2) {
-          for(var i=0;i<2;i++) {
-            if(getPlayers[i] != Meteor.userId()) {
-              otherPlayer = getPlayers[i];
-            }
-          } 
-        }      
+        if(getRoom) {
+          var getPlayers = getRoom.Players;
+         if(getRoom.PlayerCount == 2) {
+            for(var i=0;i<2;i++) {
+              if(getPlayers[i] != Meteor.userId()) {
+                otherPlayer = getPlayers[i];
+              }
+            } 
+          }   
+        }
+   
     }
 
     Template.game.events({
