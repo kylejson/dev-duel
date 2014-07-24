@@ -5,6 +5,11 @@ body {
 span {
 	margin-bottom: 15px;
 }
+
+.jumbotron img {
+    box-shadow: 2px 2px 15px #242424;
+} 
+
 #craft{
 	width: 80%; 
 }
@@ -20,11 +25,11 @@ span {
 	margin: 0 0 10px;
 }
 #header-image {
-	margin: 10px 0 0 45px;
+    width: 60%;
 }
 #header-text {
 	float: left;
-	width: 45%;
+	width: 40%;
 }
 .alert-success {
 	width: 60%;
